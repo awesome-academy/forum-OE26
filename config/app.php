@@ -229,4 +229,8 @@ return [
 
     ],
 
+    'supported_locales' => [
+        'en',
+        'vi',
+    ],
 ];
