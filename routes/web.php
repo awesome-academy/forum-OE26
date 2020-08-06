@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('setlocale/{locale}', 'LocaleController@setLocale')->name('set_locale');
+
+Route::group(['middleware' => 'locale'], function () {
+    Auth::routes();
+
+    Route::get('/home', 'HomeController@index')->name('home');
 });
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
