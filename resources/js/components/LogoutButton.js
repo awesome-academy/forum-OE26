@@ -4,7 +4,7 @@ class LogoutButton {
         this.form = d.getElementById("logout-form") || null;
 
         if (this.button && this.form) {
-            this.button.addEventListener("click", this.onLogout);
+            this.button.addEventListener("click", this.onLogout.bind(this));
         }
     }
 
