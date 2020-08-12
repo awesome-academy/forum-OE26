@@ -6,11 +6,19 @@
 
 require("./bootstrap");
 
+import path from "path";
+
 import Sidebar from "./components/SideBar";
 import LogoutButton from "./components/LogoutButton";
+import MarkdownEditor from "./components/MarkdownEditor";
+import CreateQuestionForm from "./components/CreateQuestionForm";
 
-window.addEventListener("DOMContentLoaded", () => {
-    const sidebar = new Sidebar(document);
+const sidebar = new Sidebar(document);
+const logoutButton = new LogoutButton(document);
 
-    const logoutButton = new LogoutButton(document);
-});
+const editorDiv = document.getElementById("editor");
+const editor = editorDiv && new MarkdownEditor(editorDiv);
+
+const createQuestionForm =
+    window.location.pathname === path.resolve("questions", "create") &&
+    new CreateQuestionForm(document, editor);

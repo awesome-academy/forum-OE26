@@ -133,24 +133,16 @@ body {
 
     h5 {
         line-height: 27px;
-        font-size: 30;
+        font-size: 30px;
         margin-top: -20px;
         margin-bottom: -20px;
-    }
-
-    .fa-caret-up,
-    .fa-caret-down {
-        font-size: 80px;
-    }
-
-    .fa-bookmark,
-    .fa-history {
-        font-size: 20px;
+        padding-top: 7px;
     }
 
     .fa-bookmark:hover,
     .fa-history:hover,
-    path[fill="currentColor"]:hover {
+    .fa-caret-up,
+    .fa-caret-down {
         cursor: pointer;
     }
 }
@@ -183,6 +175,10 @@ body {
 .medium-avatar {
     height: 54px;
     width: 54px;
+}
+
+.review-btn {
+    width: 168px !important;
 }
 
 .footer {

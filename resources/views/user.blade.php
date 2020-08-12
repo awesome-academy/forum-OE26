@@ -28,14 +28,14 @@
             </label>
         </div>
     </div>
-    <div class="row mx-2 user-container">
+    <div class="row mx-2 pt-2 user-container">
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 text-break p-2 border">
             <div class="d-flex">
                 <img src="" alt="{{ trans('user.avatar') }}" class="mr-2 medium-avatar" />
                 <p class="small-text m-0">
-                    <!-- Name -->
+                    {{-- Bob --}}
                     <br />
-                    <!-- Location -->
+                    {{-- Meow Meow --}}
                 </p>
             </div>
         </div>

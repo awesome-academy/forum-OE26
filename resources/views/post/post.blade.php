@@ -3,7 +3,7 @@
 @section('content')
     <div class="row justify-content-between flex-nowrap">
         <h2 class="text-break color-1">
-            <!--What is a NullPointerException, and how do I fix it?-->
+            {{-- What is a NullPointerException, and how do I fix it? --}}
         </h2>
         <button class="btn text-nowrap px-2 bg-color-2 color-4">
             {{ trans('post.ask_question') }}
@@ -12,26 +12,26 @@
     <div class="row border-bottom flex-nowrap">
         <p class="pr-1 text-secondary small-text">{{ trans('post.asked') }}</p>
         <p class="pr-2 small-text">
-            <!--11 years, 9 months ago-->
+            {{-- 11 years, 9 months ago --}}
         </p>
         <p class="pr-1 text-secondary small-text">{{ trans('post.active') }}</p>
         <p class="pr-2 small-text">
-            <!--2 months ago-->
+            {{-- 2 months ago --}}
         </p>
         <p class="pr-1 text-secondary small-text">{{ trans('post.viewed') }}</p>
         <p class="small-text">
-            <!--2.8m times-->
+            {{-- 2.8m times --}}
         </p>
     </div>
-    <div class="row flex-nowrap mt-3 color-2">
+    <div class="row flex-nowrap mt-3 color-2 border border-dark rounded p-3">
         <div class="d-flex flex-column align-items-center post-left-column">
-            <i class="fa fa-caret-up hover" aria-hidden="true"></i>
+            <i class="fa fa-caret-up fa-6x hover" aria-hidden="true"></i>
             <h5>
                 <!-- Content -->
             </h5>
-            <i class="fa fa-caret-down hover" aria-hidden="true"></i>
+            <i class="fa fa-caret-down fa-6x hover" aria-hidden="true"></i>
             <i class="far fa-bookmark hover" aria-hidden="true"></i>
-            <i class="fa fa-history mt-2 hover" aria-hidden="true"></i>
+            <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
         </div>
         <div class="post-right-column flex-grow-1 pt-2 pl-3">
             <p>
@@ -90,7 +90,7 @@
         </div>
     </div>
     <div class="d-flex justify-content-between py-3">
-        <h5>{{ trans('post.answers') }}</h5>
+        <h3>{{ trans('post.answers') }}</h3>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary active">
                 <input type="radio" name="options" id="option1" autocomplete="off" checked />
@@ -106,15 +106,15 @@
             </label>
         </div>
     </div>
-    <div class="row flex-nowrap mt-3 color-2">
+    <div class="row flex-nowrap mt-3 color-2 p-3">
         <div class="d-flex flex-column align-items-center post-left-column">
-            <i class="fa fa-caret-up hover" aria-hidden="true"></i>
+            <i class="fa fa-caret-up fa-6x hover" aria-hidden="true"></i>
             <h5>
                 <!-- Content -->
             </h5>
-            <i class="fa fa-caret-down hover" aria-hidden="true"></i>
+            <i class="fa fa-caret-down fa-6x hover" aria-hidden="true"></i>
             <i class="far fa-bookmark hover" aria-hidden="true"></i>
-            <i class="fa fa-history mt-2 hover" aria-hidden="true"></i>
+            <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
         </div>
         <div class="post-right-column flex-grow-1 pt-2 pl-3">
             <p>
