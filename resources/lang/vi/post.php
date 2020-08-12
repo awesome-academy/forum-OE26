@@ -17,4 +17,12 @@ return [
     'vote' => 'Đánh giá',
     'answered' => 'đã trả lời ',
     'avatar' => 'ảnh đại diện',
+    'years' => ' năm',
+    'months' => ' tháng',
+    'days' => ' ngày',
+    'hours' => ' giờ',
+    'minutes' => ' phút',
+    'seconds' => ' giây',
+    'ago' => 'trước đây',
+    'times' => ' lần',
 ];

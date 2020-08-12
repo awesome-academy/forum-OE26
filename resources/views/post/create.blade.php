@@ -6,6 +6,9 @@
         @csrf
         <div class="form-group">
             <label>{{ trans('create.title') }}</label>
+            @error('title')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
             <small class="form-text text-muted">
                 {{ trans('create.title_description') }}
             </small>
@@ -13,6 +16,9 @@
         </div>
         <div class="form-group">
             <label>{{ trans('create.body') }}</label>
+            @error('content')
+                <div class="alert alert-danger">{{ $message }}</div>
+            @enderror
             <small class="form-text text-muted">
                 {{ trans('create.body_description') }}
             </small>

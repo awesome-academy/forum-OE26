@@ -3,16 +3,41 @@
 @section('content')
     <div class="row justify-content-between flex-nowrap">
         <h2 class="text-break color-1">
-            {{-- What is a NullPointerException, and how do I fix it? --}}
+            {{ $title }}
         </h2>
-        <button class="btn text-nowrap px-2 bg-color-2 color-4">
-            {{ trans('post.ask_question') }}
-        </button>
+        <form action="{{ route('questions.create') }}" method="get">
+            <button type="submit" class="btn text-nowrap px-2 bg-color-2 color-4">
+                {{ trans('post.ask_question') }}
+            </button>
+        </form>
     </div>
     <div class="row border-bottom flex-nowrap">
         <p class="pr-1 text-secondary small-text">{{ trans('post.asked') }}</p>
         <p class="pr-2 small-text">
-            {{-- 11 years, 9 months ago --}}
+            @foreach ($asked as $key => $value)
+                @if ($value > 0)
+                    @switch($key)
+                        @case('y')
+                            {{ $value . trans('post.years') }}
+                            @break
+                        @case('m')
+                            {{ $value . trans('post.months') }}
+                            @break
+                        @case('d')
+                            {{ $value . trans('post.days') }}
+                            @break
+                        @case('h')
+                            {{ $value . trans('post.hours') }}
+                            @break
+                        @case('i')
+                            {{ $value . trans('post.minutes') }}
+                            @break
+                        @default
+                            {{ $value . trans('post.seconds') }}
+                    @endswitch
+                @endif
+            @endforeach
+            {{ trans('post.ago') }}
         </p>
         <p class="pr-1 text-secondary small-text">{{ trans('post.active') }}</p>
         <p class="pr-2 small-text">
@@ -20,14 +45,14 @@
         </p>
         <p class="pr-1 text-secondary small-text">{{ trans('post.viewed') }}</p>
         <p class="small-text">
-            {{-- 2.8m times --}}
+            {{ $viewsNumber . trans('post.times') }}
         </p>
     </div>
     <div class="row flex-nowrap mt-3 color-2 border border-dark rounded p-3">
         <div class="d-flex flex-column align-items-center post-left-column">
             <i class="fa fa-caret-up fa-6x hover" aria-hidden="true"></i>
             <h5>
-                <!-- Content -->
+                {{ $votesNumber }}
             </h5>
             <i class="fa fa-caret-down fa-6x hover" aria-hidden="true"></i>
             <i class="far fa-bookmark hover" aria-hidden="true"></i>
@@ -35,7 +60,11 @@
         </div>
         <div class="post-right-column flex-grow-1 pt-2 pl-3">
             <p>
-                <!-- Content -->
+                <div class="viewer" content-id="
+                    @if ($contentId)
+                        {{ $contentId }}
+                    @endif
+                "></div>
             </p>
             <div class="d-flex flex-wrap w-100 mb-4">
                 <p class="d-inline-block alert alert-success px-1 py-0 mt-1 mb-0 mr-1">

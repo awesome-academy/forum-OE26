@@ -19,7 +19,16 @@ Route::get('setlocale/{locale}', 'LocaleController@setLocale')->name('set_locale
 Route::group(['middleware' => 'locale'], function () {
     Auth::routes();
 
-    Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/', 'HomeController@index')->name('home');
 
-    Route::resource('questions', 'QuestionController');
+    Route::resource('questions', 'QuestionController')->only([
+        'index',
+        'create',
+        'store',
+        'show',
+    ]);
+
+    Route::resource('contents', 'ContentController')->only([
+        'show',
+    ]);
 });

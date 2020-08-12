@@ -17,4 +17,12 @@ return [
     'vote' => 'Votes',
     'answered' => 'answered',
     'avatar' => 'avatar',
+    'years' => ' years',
+    'months' => ' months',
+    'days' => ' days',
+    'hours' => ' hours',
+    'minutes' => ' minutes',
+    'seconds' => ' seconds',
+    'ago' => 'ago',
+    'times' => ' times',
 ];
