@@ -6,12 +6,17 @@
 
 require("./bootstrap");
 
+import "codemirror/lib/codemirror.css";
+import "@toast-ui/editor/dist/toastui-editor.css";
+
 import path from "path";
 
 import Sidebar from "./components/SideBar";
 import LogoutButton from "./components/LogoutButton";
 import MarkdownEditor from "./components/MarkdownEditor";
 import CreateQuestionForm from "./components/CreateQuestionForm";
+import MarkdownViewer from "./components/MarkdownViewer";
+import Post from "./components/Post";
 
 const sidebar = new Sidebar(document);
 const logoutButton = new LogoutButton(document);
@@ -22,3 +27,5 @@ const editor = editorDiv && new MarkdownEditor(editorDiv);
 const createQuestionForm =
     window.location.pathname === path.resolve("questions", "create") &&
     new CreateQuestionForm(document, editor);
+
+const post = new Post(MarkdownViewer);
