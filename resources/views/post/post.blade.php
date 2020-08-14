@@ -41,7 +41,7 @@
         </p>
         <p class="pr-1 text-secondary small-text">{{ trans('post.active') }}</p>
         <p class="pr-2 small-text">
-            {{-- 2 months ago --}}
+            {{ $activesNumber }}
         </p>
         <p class="pr-1 text-secondary small-text">{{ trans('post.viewed') }}</p>
         <p class="small-text">
@@ -55,16 +55,13 @@
                 {{ $votesNumber }}
             </h5>
             <i class="fa fa-caret-down fa-6x hover" aria-hidden="true"></i>
-            <i class="far fa-bookmark hover" aria-hidden="true"></i>
             <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
         </div>
         <div class="post-right-column flex-grow-1 pt-2 pl-3">
             <p>
-                <div class="viewer" content-id="
-                    @if ($contentId)
-                        {{ $contentId }}
-                    @endif
-                "></div>
+                @if ($content)
+                    <div class="viewer" content-id="{{ $content->id }}"></div>
+                @endif
             </p>
             <div class="d-flex flex-wrap w-100 mb-4">
                 <p class="d-inline-block alert alert-success px-1 py-0 mt-1 mb-0 mr-1">
@@ -75,43 +72,29 @@
                 <div class="d-flex flex-nowrap">
                     <a href="#" class="pr-2 small-text">{{ trans('post.share') }}</a>
                     <a href="#" class="pr-2 small-text">{{ trans('post.edit') }}</a>
-                    <a href="#" class="small-text">{{ trans('post.follow') }}</a>
                 </div>
                 <div class="d-flex flex-wrap flex-grow-1 justify-content-end">
                     <div class="user-info text-break alert alert-success p-2 mr-2">
                         <p class="small-text m-0">
-                            {{ trans('post.edited') }} <span>
-                                <!--Jan 3 '10 at 20:09--></span>
+                            {{ trans('post._asked') }} <span>{{ date('F j, Y', strtotime($content->created_at)) }}</span>
                         </p>
                         <div class="d-flex">
-                            <img src="" alt="{{ trans('post.avatar') }}" class="mr-2 small-avatar" />
+                            <img src="{{ asset('storage/default_avatar.png') }}" alt="{{ trans('post.avatar') }}" class="mr-2 small-avatar" />
                             <p class="small-text m-0">
-                                <!-- Name -->
+                                {{ $user->name }}
                                 <br />
-                                <!-- Location -->
-                            </p>
-                        </div>
-                    </div>
-                    <div class="user-info text-break alert alert-success p-2 mr-2">
-                        <p class="small-text m-0">
-                            {{ trans('post._asked') }} <span>
-                                <!--Jan 3 '10 at 20:09--></span>
-                        </p>
-                        <div class="d-flex">
-                            <img src="" alt="{{ trans('post.avatar') }}" class="mr-2 small-avatar" />
-                            <p class="small-text m-0">
-                                <!-- Name -->
-                                <br />
-                                <!-- Location -->
+                                {{ $user->location }}
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="d-flex flex-column border-top">
-                <p class="m-0 pl-3 text-break border-bottom">
-                    <!-- Content -->
-                </p>
+                @foreach ($comments as $comment)
+                    <p class="m-0 pl-3 text-break border-bottom">
+                        {{ $comment->content . ' - ' . $comment->user->name }}
+                    </p>
+                @endforeach
                 <button class="mt-2 h-auto border-0 btn btn-success bg-color-3 small-text">
                     {{ trans('post.add_a_comment') }}
                 </button>
@@ -135,72 +118,61 @@
             </label>
         </div>
     </div>
-    <div class="row flex-nowrap mt-3 color-2 p-3">
-        <div class="d-flex flex-column align-items-center post-left-column">
-            <i class="fa fa-caret-up fa-6x hover" aria-hidden="true"></i>
-            <h5>
-                <!-- Content -->
-            </h5>
-            <i class="fa fa-caret-down fa-6x hover" aria-hidden="true"></i>
-            <i class="far fa-bookmark hover" aria-hidden="true"></i>
-            <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
-        </div>
-        <div class="post-right-column flex-grow-1 pt-2 pl-3">
-            <p>
-                <!-- Content -->
-            </p>
-            <div class="d-flex flex-wrap w-100">
-                <p class="d-inline-block alert alert-success px-1 py-0 mr-1">
-                    <!-- Content -->
-                </p>
+    @foreach ($answers as $answer)
+        <div class="row flex-nowrap mt-3 color-2 p-3">
+            <div class="d-flex flex-column align-items-center post-left-column">
+                <i class="fa fa-caret-up fa-6x hover" aria-hidden="true"></i>
+                <h5>
+                    {{ $answer->sum_votes }}
+                </h5>
+                <i class="fa fa-caret-down fa-6x hover" aria-hidden="true"></i>
+                <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
             </div>
-            <div class="d-flex justify-content-between pr-3">
-                <div class="d-flex flex-nowrap">
-                    <a href="#" class="pr-2 small-text">{{ trans('post.share') }}</a>
-                    <a href="#" class="pr-2 small-text">{{ trans('post.edit') }}</a>
-                    <a href="#" class="small-text">{{ trans('post.follow') }}</a>
+            <div class="post-right-column flex-grow-1 pt-2 pl-3">
+                <p>
+                    @if ($answer->contents)
+                        <div class="viewer" content-id="{{ $answer->content->id }}"></div>
+                    @endif
+                </p>
+                <div class="d-flex flex-wrap w-100">
+                    <p class="d-inline-block alert alert-success px-1 py-0 mr-1">
+                        <!-- Content -->
+                    </p>
                 </div>
-                <div class="d-flex flex-wrap flex-grow-1 justify-content-end">
+                <div class="d-flex justify-content-between pr-3">
+                    <div class="d-flex flex-nowrap">
+                        <a href="#" class="pr-2 small-text">{{ trans('post.share') }}</a>
+                        <a href="#" class="pr-2 small-text">{{ trans('post.edit') }}</a>
+                    </div>
                     <div class="d-flex flex-wrap flex-grow-1 justify-content-end">
-                        <div class="user-info text-break alert alert-success p-2 mr-2">
-                            <p class="small-text m-0">
-                                {{ trans('post.edited')}} <span>
-                                    <!--Jan 3 '10 at 20:09--></span>
-                            </p>
-                            <div class="d-flex">
-                                <img src="" alt="{{ trans('post.avatar') }}" class="mr-2 small-avatar" />
+                        <div class="d-flex flex-wrap flex-grow-1 justify-content-end">
+                            <div class="user-info text-break alert alert-success p-2 mr-2">
                                 <p class="small-text m-0">
-                                    <!-- Name -->
-                                    <br />
-                                    <!-- Location -->
+                                    {{ trans('post.answered')}} <span>{{ date('F j, Y', strtotime($answer->content->created_at)) }}</span>
                                 </p>
-                            </div>
-                        </div>
-                        <div class="user-info text-break alert alert-success p-2 mr-2">
-                            <p class="small-text m-0">
-                                {{ trans('post.answered')}} <span>
-                                    <!--Jan 3 '10 at 20:09--></span>
-                            </p>
-                            <div class="d-flex">
-                                <img src="" alt="{{ trans('post.avatar') }}" class="mr-2 small-avatar" />
-                                <p class="small-text m-0">
-                                    <!-- Name -->
-                                    <br />
-                                    <!-- Location -->
-                                </p>
+                                <div class="d-flex">
+                                    <img src="{{ asset('storage/default_avatar.png') }}" alt="{{ trans('post.avatar') }}" class="mr-2 small-avatar" />
+                                    <p class="small-text m-0">
+                                        {{ $answer->user->name }}
+                                        <br />
+                                        {{ $answer->user->location }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="d-flex flex-column border-top">
-                <p class="m-0 pl-3 text-break border-bottom">
-                    <!-- Content -->
-                </p>
-                <button class="mt-2 h-auto border-0 btn btn-success bg-color-3 small-text">
-                    {{ trans('post.add_a_comment') }}
-                </button>
+                <div class="d-flex flex-column border-top">
+                    @foreach ($answers[config('constants.zero')]->comments as $comment)
+                        <p class="m-0 pl-3 text-break border-bottom">
+                            {{ $comment->content . ' - ' . $comment->user->name }}
+                        </p>
+                    @endforeach
+                    <button class="mt-2 h-auto border-0 btn btn-success bg-color-3 small-text">
+                        {{ trans('post.add_a_comment') }}
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    @endforeach
 @endsection

@@ -5,4 +5,9 @@ return [
     'initial_version' => 1,
     'increasing_views_each_request' => 1,
     'zero' => 0,
+    'questions_per_page' => 15,
+    'newest' => 'newest',
+    'active' => 'active',
+    'unanswered' => 'unanswered',
+    'sorted_by' => 'sortedby',
 ];
