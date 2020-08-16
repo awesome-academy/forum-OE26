@@ -10,4 +10,6 @@ return [
     'active' => 'active',
     'unanswered' => 'unanswered',
     'sorted_by' => 'sortedby',
+    'increasing_activities_count' => 1,
+    'increasing_version' => 1,
 ];

@@ -77,7 +77,6 @@ class QuestionController extends Controller
         $question = Question::create([
             'user_id' => Auth::id(),
             'title' => $request->title,
-            'content' => $request->content,
             'views_number' => config('constants.initial_view_number'),
             'activities_count' => config('constants.zero'),
         ]);
@@ -101,6 +100,7 @@ class QuestionController extends Controller
     {
         $question->update(['views_number' => $question->views_number + config('constants.increasing_views_each_request')]);
 
+        $questionId = $question->id;
         $title = $question->title;
 
         $subtract = Carbon::now()->diff(Carbon::parse($question->created_at));
@@ -163,6 +163,7 @@ class QuestionController extends Controller
         });
 
         return view('post.post', compact(
+            'questionId',
             'title',
             'asked',
             'viewsNumber',
@@ -183,7 +184,21 @@ class QuestionController extends Controller
      */
     public function edit(Question $question)
     {
-        //
+        $this->authorize('update', $question);
+
+        $questionId = $question->id;
+        $title = $question->title;
+
+        $maxContentVersion = $question->contents()->max('version');
+        $content = $question->contents()
+            ->where('version', $maxContentVersion)
+            ->first();
+
+        return view('post.edit', compact(
+            'questionId',
+            'title',
+            'content',
+        ));
     }
 
     /**
@@ -195,7 +210,22 @@ class QuestionController extends Controller
      */
     public function update(Request $request, Question $question)
     {
-        //
+        $this->authorize('update', $question);
+
+        $question->update([
+            'title' => $request->title,
+            'activities_count' => $question->activities_count + config('increasing_activities_count'),
+            'active_at' => Carbon::now(),
+        ]);
+
+        $maxContentVersion = $question->contents()->max('version');
+        $question->contents()
+            ->create([
+                'content' => $request->content,
+                'version' => $maxContentVersion + config('constants.increasing_version'),
+            ]);
+
+        return redirect()->route('questions.show', $question->id);
     }
 
     /**
