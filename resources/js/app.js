@@ -21,9 +21,12 @@ import SortedTypeGroupButton from "./components/SortedTypeGroupButton";
 import EditQuestionForm from "./components/EditQuestionForm";
 import ShareButtons from "./components/ShareButtons";
 import CreateAnswerForm from "./components/CreateAnswerForm";
+import SearchInput from "./components/SearchInput";
 
 const sidebar = new Sidebar(document);
 const logoutButton = new LogoutButton(document);
+
+const searchInput = new SearchInput(document);
 
 const editorDiv = document.getElementById("editor");
 const editor = editorDiv && new MarkdownEditor(editorDiv);
@@ -42,5 +45,5 @@ const editQuestionForm =
 const shareButtons = new ShareButtons(document);
 
 const createAnswerForm =
-    /^\/questions\/\d+$/gi.test(window.location.pathname) &&
-    new CreateAnswerForm(document, editor);
+    /^\/questions\/\d+$/gi.test(window.location.pathname)
+    && new CreateAnswerForm(document, editor);

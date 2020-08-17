@@ -10,6 +10,7 @@ class MarkdownEditor
             el: element,
             previewStyle: "vertical",
             height: "500px",
+            initialEditType: "wysiwyg",
             usageStatistics: false
         });
     }
