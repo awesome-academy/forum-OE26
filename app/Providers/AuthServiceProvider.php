@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Models\Comment;
+use App\Models\Role;
+use App\Models\User;
 use App\Policies\AnswerPolicy;
 use App\Policies\QuestionPolicy;
 use App\Policies\CommentPolicy;
@@ -33,6 +35,21 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('dashboard', function ($user) {
+            $rootId = Role::where('name', 'LIKE', config('roles.root_admin'))
+                ->first()
+                ->id;
+
+            return $user->role_id === $rootId;
+        });
+
+        Gate::define('change_role', function ($user, User $model) {
+            $adminRoleId = Role::where('name', 'LIKE', config('roles.root_admin'))
+                ->first()
+                ->id;
+
+            return $user->role->id === $adminRoleId
+                && $model->role->id !== $adminRoleId;
+        });
     }
 }

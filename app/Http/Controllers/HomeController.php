@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,20 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = Auth::user();
+
+        return view('home', compact([
+            'user',
+        ]));
+    }
+
+    public function editProfile(UserRequest $request)
+    {
+        $user = Auth::user();
+        $user->update($request->all());
+
+        return view('home', compact([
+            'user',
+        ]));
     }
 }

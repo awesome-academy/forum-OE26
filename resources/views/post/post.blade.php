@@ -5,11 +5,13 @@
         <h2 class="text-break color-1">
             {{ $title }}
         </h2>
-        <form action="{{ route('questions.create') }}" method="get">
-            <button type="submit" class="btn text-nowrap px-2 bg-color-2 color-4">
-                {{ trans('post.ask_question') }}
-            </button>
-        </form>
+        @can('create', App\Models\Question::class)
+            <form action="{{ route('questions.create') }}" method="get">
+                <button type="submit" class="btn text-nowrap px-2 bg-color-2 color-4">
+                    {{ trans('post.ask_question') }}
+                </button>
+            </form>
+        @endcan
     </div>
     <div class="row border-bottom flex-nowrap">
         <p class="pr-1 text-secondary small-text">{{ trans('post.asked') }}</p>
@@ -61,7 +63,9 @@
             @else
                 <i class="fa fa-caret-down fa-6x hover down-vote" aria-hidden="true" data-question="{{ $questionId }}"></i>
             @endif
-            <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
+            <a href="{{ route('history', ['type' => config('constants.question'), 'id' => $questionId]) }}">
+                <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
+            </a>
         </div>
         <div class="post-right-column flex-grow-1 pt-2 pl-3">
             <p>
@@ -149,16 +153,18 @@
                         </p>
                     </div>
                 @endforeach
-                <form action="{{ route('comments.store') }}" method="post">
-                    <div class="form-group mt-2">
-                        @csrf
-                        <input type="hidden" name="question_id" value="{{ $questionId }}">
-                        <input type="text" class="form-control border-0 bg-color-4" autocomplete="off" placeholder="{{ trans('post.comment_here') }}" name="content">
-                        <button type="submit" class="mt-1 h-auto border-0 btn btn-success bg-color-3 small-text">
-                            {{ trans('post.add_a_comment') }}
-                        </button>
-                    </div>
-                </form>
+                @can('create', App\Models\Comment::class)
+                    <form action="{{ route('comments.store') }}" method="post">
+                        <div class="form-group mt-2">
+                            @csrf
+                            <input type="hidden" name="question_id" value="{{ $questionId }}">
+                            <input type="text" class="form-control border-0 bg-color-4" autocomplete="off" placeholder="{{ trans('post.comment_here') }}" name="content">
+                            <button type="submit" class="mt-1 h-auto border-0 btn btn-success bg-color-3 small-text">
+                                {{ trans('post.add_a_comment') }}
+                            </button>
+                        </div>
+                    </form>
+                @endcan
             </div>
         </div>
     </div>
@@ -187,13 +193,15 @@
                 @else
                     <i class="fa fa-caret-up fa-6x hover up-vote" aria-hidden="true" data-answer="{{ $answer->id }}"></i>
                 @endif
-                <h5>{{ $votesNumber }}</h5>
+                <h5>{{ $answer->sum_votes }}</h5>
                 @if (isset($answer->vote) && $answer->vote->vote === config('constants.down_vote'))
                     <i class="fa fa-caret-down fa-6x hover color-3 down-vote" aria-hidden="true" data-answer="{{ $answer->id }}"></i>
                 @else
                     <i class="fa fa-caret-down fa-6x hover down-vote" aria-hidden="true" data-answer="{{ $answer->id }}"></i>
                 @endif
-                <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
+                <a href="{{ route('history', ['type' => config('constants.answer'), 'id' => $answer->id]) }}">
+                    <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
+                </a>
             </div>
             <div class="post-right-column flex-grow-1 pt-2 pl-3">
                 <p>
@@ -204,7 +212,9 @@
                 <div class="d-flex justify-content-between pr-3">
                     <div class="d-flex flex-nowrap">
                         <a href="#" class="pr-2 small-text share-btn">{{ trans('post.share') }}</a>
-                        <a href="#" class="pr-2 small-text">{{ trans('post.edit') }}</a>
+                        @can('update', $answer)
+                            <a href="{{ route('answers.edit', $answer->id) }}" class="pr-2 small-text">{{ trans('post.edit') }}</a>
+                        @endcan
                     </div>
                     <div class="d-flex flex-wrap flex-grow-1 justify-content-end">
                         <div class="d-flex flex-wrap flex-grow-1 justify-content-end">
@@ -245,30 +255,34 @@
                             </p>
                         </div>
                     @endforeach
-                    <form action="{{ route('comments.store') }}" method="post">
-                        <div class="form-group mt-2">
-                            @csrf
-                            <input type="hidden" name="question_id" value="{{ $questionId }}">
-                            <input type="hidden" name="answer_id" value="{{ $answer->id }}">
-                            <input type="text" class="form-control border-0 bg-color-4" autocomplete="off" placeholder="{{ trans('post.comment_here') }}" name="content">
-                            <button type="submit" class="mt-1 h-auto border-0 btn btn-success bg-color-3 small-text">
-                                {{ trans('post.add_a_comment') }}
-                            </button>
-                        </div>
-                    </form>
+                    @can('create', App\Models\Comment::class)
+                        <form action="{{ route('comments.store') }}" method="post">
+                            <div class="form-group mt-2">
+                                @csrf
+                                <input type="hidden" name="question_id" value="{{ $questionId }}">
+                                <input type="hidden" name="answer_id" value="{{ $answer->id }}">
+                                <input type="text" class="form-control border-0 bg-color-4" autocomplete="off" placeholder="{{ trans('post.comment_here') }}" name="content">
+                                <button type="submit" class="mt-1 h-auto border-0 btn btn-success bg-color-3 small-text">
+                                    {{ trans('post.add_a_comment') }}
+                                </button>
+                            </div>
+                        </form>
+                    @endcan
                 </div>
             </div>
         </div>
     @endforeach
-    <div class="mt-5">
-        <h2 class="ml-2">{{ trans('post.your_answer') }}</h2>
-        <form action="{{ route('answers.store') }}" method="post" id="new-answer-form">
-            @csrf
-            <div id="editor"></div>
-            <input type="hidden" name="question_id" value="{{ $questionId }}">
-            <button class="btn text-nowrap mt-3 px-2 bg-color-2 color-4 review-btn" id="new-answer-submit">
-                {{ trans('post.review') }}
-            </button>
-        </form>
-    </div>
+    @can('create', App\Models\Answer::class)
+        <div class="mt-5">
+            <h2 class="ml-2">{{ trans('post.your_answer') }}</h2>
+            <form action="{{ route('answers.store') }}" method="post" id="new-answer-form">
+                @csrf
+                <div id="editor"></div>
+                <input type="hidden" name="question_id" value="{{ $questionId }}">
+                <button class="btn text-nowrap mt-3 px-2 bg-color-2 color-4 review-btn" id="new-answer-submit">
+                    {{ trans('post.review') }}
+                </button>
+            </form>
+        </div>
+    @endcan
 @endsection

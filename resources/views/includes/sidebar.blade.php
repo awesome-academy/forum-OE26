@@ -10,10 +10,5 @@
                 {{ trans('bars.tags')  }}
             </a>
         </li>
-        <li class="list-group-item bg-color-2 active">
-            <a href="#" class="color-4 text-decoration-none hover">
-                {{ trans('bars.users')  }}
-            </a>
-        </li>
     </ul>
 </div>

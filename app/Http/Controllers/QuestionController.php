@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\QuestionRequest;
 use App\Models\Question;
+use App\Models\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -65,7 +66,11 @@ class QuestionController extends Controller
     {
         $this->authorize('create', Question::class);
 
-        return view('post.create');
+        $tags = Tag::all();
+
+        return view('post.create', compact([
+            'tags',
+        ]));
     }
 
     /**
@@ -90,6 +95,8 @@ class QuestionController extends Controller
                 'content' => $request->content,
                 'version' => config('constants.initial_version'),
             ]);
+
+        $question->tags()->sync($request->tags);
 
         return redirect()->route('questions.show', $question->id);
     }
@@ -243,7 +250,7 @@ class QuestionController extends Controller
         $question->contents()
             ->create([
                 'content' => $request->content,
-                'version' => $maxContentVersion + config('constants.increasing_version'),
+                'version' => $maxContentVersion + 1,
             ]);
 
         return redirect()->route('questions.show', $question->id);
