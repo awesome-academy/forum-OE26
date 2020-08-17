@@ -20,6 +20,7 @@ import Post from "./components/Post";
 import SortedTypeGroupButton from "./components/SortedTypeGroupButton";
 import EditQuestionForm from "./components/EditQuestionForm";
 import ShareButtons from "./components/ShareButtons";
+import CreateAnswerForm from "./components/CreateAnswerForm";
 
 const sidebar = new Sidebar(document);
 const logoutButton = new LogoutButton(document);
@@ -39,3 +40,7 @@ const editQuestionForm =
     && new EditQuestionForm(document, editor);
 
 const shareButtons = new ShareButtons(document);
+
+const createAnswerForm =
+    /^\/questions\/\d+$/gi.test(window.location.pathname) &&
+    new CreateAnswerForm(document, editor);

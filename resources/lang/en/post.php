@@ -25,4 +25,6 @@ return [
     'seconds' => ' seconds',
     'ago' => 'ago',
     'times' => ' times',
+    'your_answer' => 'Your Answer',
+    'review' => 'Public your answer',
 ];

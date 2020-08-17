@@ -14,14 +14,6 @@ class PermissionSeeder extends Seeder
     {
         DB::table('permissions')->insert([
             [
-                'name' => config('permission.view_any_questions'),
-                'description' => 'View any questions',
-            ],
-            [
-                'name' => config('permission.view_question'),
-                'description' => 'View a question',
-            ],
-            [
                 'name' => config('permission.create_question'),
                 'description' => 'Create a question',
             ],
@@ -32,6 +24,18 @@ class PermissionSeeder extends Seeder
             [
                 'name' => config('permission.delete_question'),
                 'description' => 'Delete a question',
+            ],
+            [
+                'name' => config('permission.create_answer'),
+                'description' => 'Create a answer',
+            ],
+            [
+                'name' => config('permission.update_answer'),
+                'description' => 'Update a answer',
+            ],
+            [
+                'name' => config('permission.delete_answer'),
+                'description' => 'Delete a answer',
             ],
         ]);
     }
