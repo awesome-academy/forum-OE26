@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Answer extends Model
 {
+    protected $fillable = [
+        'user_id',
+    ];
+
     public function contents()
     {
         return $this->morphMany(Content::class, 'contentable');

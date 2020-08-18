@@ -17,6 +17,7 @@ import MarkdownEditor from "./components/MarkdownEditor";
 import CreateQuestionForm from "./components/CreateQuestionForm";
 import MarkdownViewer from "./components/MarkdownViewer";
 import Post from "./components/Post";
+import SortedTypeGroupButton from "./components/SortedTypeGroupButton";
 
 const sidebar = new Sidebar(document);
 const logoutButton = new LogoutButton(document);
@@ -29,3 +30,4 @@ const createQuestionForm =
     new CreateQuestionForm(document, editor);
 
 const post = new Post(MarkdownViewer);
+const sortedTypeGroupButton = new SortedTypeGroupButton(document);

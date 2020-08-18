@@ -20,9 +20,36 @@ class QuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('post.list');
+        $questions = Question::with('votes', 'user')->withCount('answers');
+
+        $sortedBy = $request->query(config('constants.sorted_by'), config('constants.newest'));
+        switch ($sortedBy) {
+            case config('constants.active'):
+                $questions = $questions->orderByDesc('activities_count');
+                break;
+            case config('constants.unanswered'):
+                $questions = $questions->withCount('answers')
+                    ->orderBy('answers_count')
+                    ->orderBy('created_at');
+                break;
+            default:
+                $questions = $questions->orderByDesc('created_at');
+        }
+
+        $questions = $questions->paginate(config('constants.questions_per_page'));
+        $questions->map(function ($answer) {
+            $answer->sum_votes = $answer->votes->sum('vote');
+        });
+
+        $numberOfQuestions = Question::count();
+
+        return view('post.list', compact(
+            'questions',
+            'numberOfQuestions',
+            'sortedBy'
+        ));
     }
 
     /**
@@ -52,12 +79,13 @@ class QuestionController extends Controller
             'title' => $request->title,
             'content' => $request->content,
             'views_number' => config('constants.initial_view_number'),
+            'activities_count' => config('constants.zero'),
         ]);
 
         $question->contents()
             ->create([
                 'content' => $request->content,
-                'version' => config('constants.initial_version')
+                'version' => config('constants.initial_version'),
             ]);
 
         return redirect()->route('questions.show', $question->id);
@@ -102,22 +130,48 @@ class QuestionController extends Controller
                         ])));
 
         $viewsNumber = $question->views_number;
+
+        $activesNumber = $question->activities_count;
+
         $votesNumber = $question->votes()->sum('vote');
 
         $maxContentVersion = $question->contents()->max('version');
-
-        $contentCollection = $question
-            ->contents()
+        $content = $question->contents()
             ->where('version', $maxContentVersion)
             ->first();
-        $contentId = isset($contentCollection) ? $contentCollection->id : config('constants.zero');
+
+        $comments = $question->comments()
+            ->with('user')
+            ->get();
+
+        $user = $question->user()->first();
+
+        $answers = $question->answers()
+            ->with([
+                'user',
+                'votes',
+                'comments.user',
+            ])
+            ->get();
+        $answers->map(function ($answer) {
+            $maxContentVersion = $answer->contents()->max('version');
+            $answer->content = $answer->contents()
+                ->where('version', $maxContentVersion)
+                ->first();
+
+            $answer->sum_votes = $answer->votes->sum('vote');
+        });
 
         return view('post.post', compact(
             'title',
             'asked',
             'viewsNumber',
+            'activesNumber',
             'votesNumber',
-            'contentId'
+            'content',
+            'comments',
+            'user',
+            'answers',
         ));
     }
 
