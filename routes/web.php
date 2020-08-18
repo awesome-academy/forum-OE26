@@ -34,8 +34,13 @@ Route::group(['middleware' => 'locale'], function () {
         'destroy',
     ]);
 
+    Route::resource('comments', 'CommentController')->only([
+        'store',
+        'update',
+        'destroy',
+    ]);
+
     Route::get('searched', 'SearchController@searchedQuestions')->name('search');
 });
 
 Route::get('search/{query}', 'SearchController@searchQuestion');
-Route::get('search', 'SearchController@searchQuestion');

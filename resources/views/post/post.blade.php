@@ -90,14 +90,65 @@
                 </div>
             </div>
             <div class="d-flex flex-column border-top">
+                <div class="modal fade" id="updateCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">{{ trans('post.edit_comment') }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="update-comment" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="question_id" value="{{ $questionId }}">
+                                    <div class="form-group">
+                                        <label for="comment-content-input" class="col-form-label">{{ trans('post.comment') }}</label>
+                                        <input type="text" class="form-control" name="content" id="comment-content-input">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('post.close') }}</button>
+                                <button type="submit" form="update-comment" class="btn btn-primary">{{ trans('post.edit') }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 @foreach ($comments as $comment)
-                    <p class="m-0 pl-3 text-break border-bottom">
-                        {{ $comment->content . ' - ' . $comment->user->name }}
-                    </p>
+                    <div>
+                        @can('delete', $comment)
+                            <form class="delete-comment-form" action="{{ route('comments.destroy', $comment->id) }}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="question_id" value="{{ $questionId }}">
+                            </form>
+                        @endcan
+                        <p class="m-0 pl-3 text-break border-bottom">
+                            {{ $comment->content . ' - ' . $comment->user->name . '_' . date('F j, Y', strtotime($comment->updated_at)) }}
+                            @can('update', $comment)
+                                <a href="#" data-toggle="modal" class="ml-3" data-target="#updateCommentModal" data-id="{{ $comment->id }}" data-content="{{ $comment->content }}">{{ trans('post._edit') }}</a>
+                            @endcan
+                            @can('delete', $comment)
+                                <a href="#" class="delete-comment-button ml-1">{{ trans('post.delete') }}</a>
+                            @endcan
+                        </p>
+                    </div>
                 @endforeach
-                <button class="mt-2 h-auto border-0 btn btn-success bg-color-3 small-text">
-                    {{ trans('post.add_a_comment') }}
-                </button>
+                <form action="{{ route('comments.store') }}" method="post">
+                    <div class="form-group mt-2">
+                        @csrf
+                        <input type="hidden" name="question_id" value="{{ $questionId }}">
+                        <input type="text" class="form-control border-0 bg-color-4" autocomplete="off" placeholder="{{ trans('post.comment_here') }}" name="content">
+                        <button type="submit" class="mt-1 h-auto border-0 btn btn-success bg-color-3 small-text">
+                            {{ trans('post.add_a_comment') }}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -164,13 +215,36 @@
                 </div>
                 <div class="d-flex flex-column border-top">
                     @foreach ($answer->comments as $comment)
-                        <p class="m-0 pl-3 text-break border-bottom">
-                            {{ $comment->content . ' - ' . $comment->user->name }}
-                        </p>
+                        <div>
+                            @can('delete', $comment)
+                                <form class="delete-comment-form" action="{{ route('comments.destroy', $comment->id) }}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="question_id" value="{{ $questionId }}">
+                                </form>
+                            @endcan
+                            <p class="m-0 pl-3 text-break border-bottom">
+                                {{ $comment->content . ' - ' . $comment->user->name . '_' . date('F j, Y', strtotime($comment->updated_at)) }}
+                                @can('update', $comment)
+                                    <a href="#" data-toggle="modal" class="ml-3" data-target="#updateCommentModal" data-id="{{ $comment->id }}" data-content="{{ $comment->content }}">{{ trans('post._edit') }}</a>
+                                @endcan
+                                @can('delete', $comment)
+                                    <a href="#" class="delete-comment-button ml-1">{{ trans('post.delete') }}</a>
+                                @endcan
+                            </p>
+                        </div>
                     @endforeach
-                    <button class="mt-2 h-auto border-0 btn btn-success bg-color-3 small-text">
-                        {{ trans('post.add_a_comment') }}
-                    </button>
+                    <form action="{{ route('comments.store') }}" method="post">
+                        <div class="form-group mt-2">
+                            @csrf
+                            <input type="hidden" name="question_id" value="{{ $questionId }}">
+                            <input type="hidden" name="answer_id" value="{{ $answer->id }}">
+                            <input type="text" class="form-control border-0 bg-color-4" autocomplete="off" placeholder="{{ trans('post.comment_here') }}" name="content">
+                            <button type="submit" class="mt-1 h-auto border-0 btn btn-success bg-color-3 small-text">
+                                {{ trans('post.add_a_comment') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

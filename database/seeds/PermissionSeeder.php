@@ -37,6 +37,18 @@ class PermissionSeeder extends Seeder
                 'name' => config('permission.delete_answer'),
                 'description' => 'Delete a answer',
             ],
+            [
+                'name' => config('permission.create_comment'),
+                'description' => 'Create a comment',
+            ],
+            [
+                'name' => config('permission.update_comment'),
+                'description' => 'Update a comment',
+            ],
+            [
+                'name' => config('permission.delete_comment'),
+                'description' => 'Delete a comment',
+            ],
         ]);
     }
 }

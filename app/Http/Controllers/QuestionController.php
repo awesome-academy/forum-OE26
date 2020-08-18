@@ -162,6 +162,10 @@ class QuestionController extends Controller
             $answer->sum_votes = $answer->votes->sum('vote');
         });
 
+        $comments = $question->comments()
+            ->with('user')
+            ->get();
+
         return view('post.post', compact(
             'questionId',
             'title',
@@ -169,10 +173,10 @@ class QuestionController extends Controller
             'viewsNumber',
             'activesNumber',
             'votesNumber',
-            'content',
-            'comments',
             'user',
             'answers',
+            'comments',
+            'content',
         ));
     }
 
