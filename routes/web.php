@@ -33,4 +33,9 @@ Route::group(['middleware' => 'locale'], function () {
         'update',
         'destroy',
     ]);
+
+    Route::get('searched', 'SearchController@searchedQuestions')->name('search');
 });
+
+Route::get('search/{query}', 'SearchController@searchQuestion');
+Route::get('search', 'SearchController@searchQuestion');

@@ -6,17 +6,24 @@
         <i class="fa fa-2x fa-carrot color-4"></i>
     </a>
     <div class="navbar-nav flex-grow-1">
-        <form class="form-inline my-2 my-lg-0 w-100">
-            <input class="form-control w-100" type="search" placeholder="{{ trans('bars.search') }}" aria-label="Search" />
+        <form method="GET" action="{{ route('search') }}" class="form-inline my-2 my-lg-0 w-100" id="search-form">
+            @if (isset($query))
+                <input class="form-control w-100" type="search" placeholder="{{ trans('bars.search') }}" aria-label="Search"
+                name="{{ config('constants.query') }}" list="search-datalist" autocomplete="off" id="search-input" value="{{ $query }}" />
+            @else
+                <input class="form-control w-100" type="search" placeholder="{{ trans('bars.search') }}" aria-label="Search"
+                name="{{ config('constants.query') }}" list="search-datalist" autocomplete="off" id="search-input" />
+            @endif
+            <datalist id="search-datalist"></datalist>
             <button class="btn color-3 my-2 my-sm-0" type="submit">
                 <i class="fas fa-search"></i>
             </button>
         </form>
     </div>
-    <button class="navbar-toggler ml-3" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler ml-3" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <i class="fa fa-bars color-4" aria-hidden="true"></i>
     </button>
-
     <div class="collapse navbar-collapse flex-grow-0" id="navbarSupportedContent">
         <ul class="navbar-nav ml-lg-auto">
             <li class="nav-item dropdown active">

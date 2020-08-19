@@ -12,4 +12,6 @@ return [
     'sorted_by' => 'sortedby',
     'increasing_activities_count' => 1,
     'increasing_version' => 1,
+    'query' => 'query',
+    'search_result_limit' => 5,
 ];

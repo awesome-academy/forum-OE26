@@ -163,7 +163,7 @@
                     </div>
                 </div>
                 <div class="d-flex flex-column border-top">
-                    @foreach ($answers[config('constants.zero')]->comments as $comment)
+                    @foreach ($answer->comments as $comment)
                         <p class="m-0 pl-3 text-break border-bottom">
                             {{ $comment->content . ' - ' . $comment->user->name }}
                         </p>
