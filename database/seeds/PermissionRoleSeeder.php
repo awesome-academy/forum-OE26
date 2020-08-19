@@ -25,11 +25,12 @@ class PermissionRoleSeeder extends Seeder
 
         $permissionIds = Permission::whereIn('name', [
             // Permissions of admin
-            config('permission.view_any_questions'),
-            config('permission.view_question'),
             config('permission.create_question'),
             config('permission.update_question'),
             config('permission.delete_question'),
+            config('permission.create_answer'),
+            config('permission.update_answer'),
+            config('permission.delete_answer'),
         ])
             ->pluck('id')
             ->toArray();
@@ -40,11 +41,10 @@ class PermissionRoleSeeder extends Seeder
 
         $permissionIds = Permission::whereIn('name', [
             // Permissions of user
-            config('permission.view_any_questions'),
-            config('permission.view_question'),
             config('permission.create_question'),
             config('permission.update_question'),
-            config('permission.delete_question'),
+            config('permission.create_answer'),
+            config('permission.update_answer'),
         ])
             ->pluck('id')
             ->toArray();

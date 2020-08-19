@@ -26,4 +26,11 @@ Route::group(['middleware' => 'locale'], function () {
     Route::resource('contents', 'ContentController')->only([
         'show',
     ]);
+
+    Route::resource('answers', 'AnswerController')->only([
+        'store',
+        'edit',
+        'update',
+        'destroy',
+    ]);
 });

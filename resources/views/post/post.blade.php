@@ -175,4 +175,15 @@
             </div>
         </div>
     @endforeach
+    <div class="mt-5">
+        <h2 class="ml-2">{{ trans('post.your_answer') }}</h2>
+        <form action="{{ route('answers.store') }}" method="post" id="new-answer-form">
+            @csrf
+            <div id="editor"></div>
+            <input type="hidden" name="question_id" value="{{ $questionId }}">
+            <button class="btn text-nowrap mt-3 px-2 bg-color-2 color-4 review-btn" id="new-answer-submit">
+                {{ trans('post.review') }}
+            </button>
+        </form>
+    </div>
 @endsection

@@ -25,4 +25,6 @@ return [
     'seconds' => ' giây',
     'ago' => 'trước đây',
     'times' => ' lần',
+    'your_answer' => 'Câu trả lời của bạn',
+    'review' => 'Công khai câu trả lời',
 ];
