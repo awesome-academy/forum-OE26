@@ -44,3 +44,8 @@ Route::group(['middleware' => 'locale'], function () {
 });
 
 Route::get('search/{query}', 'SearchController@searchQuestion');
+
+Route::prefix('/vote')->group(function () {
+    Route::put('/up', 'VoteController@upVote');
+    Route::put('/down', 'VoteController@downVote');
+});

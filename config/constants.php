@@ -14,4 +14,9 @@ return [
     'increasing_version' => 1,
     'query' => 'query',
     'search_result_limit' => 5,
+    'up_vote' => 1,
+    'down_vote' => -1,
+    'no_vote' => 0,
+    'question' => 1,
+    'answer' => 2,
 ];

@@ -50,11 +50,17 @@
     </div>
     <div class="row flex-nowrap mt-3 color-2 border border-dark rounded p-3">
         <div class="d-flex flex-column align-items-center post-left-column">
-            <i class="fa fa-caret-up fa-6x hover" aria-hidden="true"></i>
-            <h5>
-                {{ $votesNumber }}
-            </h5>
-            <i class="fa fa-caret-down fa-6x hover" aria-hidden="true"></i>
+            @if (isset($vote) && $vote->vote === config('constants.up_vote'))
+                <i class="fa fa-caret-up fa-6x hover color-3 up-vote" aria-hidden="true" data-question="{{ $questionId }}"></i>
+            @else
+                <i class="fa fa-caret-up fa-6x hover up-vote" aria-hidden="true" data-question="{{ $questionId }}"></i>
+            @endif
+            <h5>{{ $votesNumber }}</h5>
+            @if (isset($vote) && $vote->vote === config('constants.down_vote'))
+                <i class="fa fa-caret-down fa-6x hover color-3 down-vote" aria-hidden="true" data-question="{{ $questionId }}"></i>
+            @else
+                <i class="fa fa-caret-down fa-6x hover down-vote" aria-hidden="true" data-question="{{ $questionId }}"></i>
+            @endif
             <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
         </div>
         <div class="post-right-column flex-grow-1 pt-2 pl-3">
@@ -71,7 +77,9 @@
             <div class="d-flex justify-content-between pr-3">
                 <div class="d-flex flex-nowrap">
                     <a href="#" class="pr-2 small-text share-btn">{{ trans('post.share') }}</a>
-                    <a href="{{ route('questions.edit', ['question' => $questionId]) }}" class="pr-2 small-text">{{ trans('post.edit') }}</a>
+                    @can('update', $question)
+                        <a href="{{ route('questions.edit', ['question' => $questionId]) }}" class="pr-2 small-text">{{ trans('post.edit') }}</a>
+                    @endcan
                 </div>
                 <div class="d-flex flex-wrap flex-grow-1 justify-content-end">
                     <div class="user-info text-break alert alert-success p-2 mr-2">
@@ -172,11 +180,17 @@
     @foreach ($answers as $answer)
         <div class="row flex-nowrap mt-3 color-2 p-3">
             <div class="d-flex flex-column align-items-center post-left-column">
-                <i class="fa fa-caret-up fa-6x hover" aria-hidden="true"></i>
-                <h5>
-                    {{ $answer->sum_votes }}
-                </h5>
-                <i class="fa fa-caret-down fa-6x hover" aria-hidden="true"></i>
+                @if (isset($answer->vote) && $answer->vote->vote === config('constants.up_vote'))
+                    <i class="fa fa-caret-up fa-6x hover color-3 up-vote" aria-hidden="true" data-answer="{{ $answer->id }}"></i>
+                @else
+                    <i class="fa fa-caret-up fa-6x hover up-vote" aria-hidden="true" data-answer="{{ $answer->id }}"></i>
+                @endif
+                <h5>{{ $votesNumber }}</h5>
+                @if (isset($answer->vote) && $answer->vote->vote === config('constants.down_vote'))
+                    <i class="fa fa-caret-down fa-6x hover color-3 down-vote" aria-hidden="true" data-answer="{{ $answer->id }}"></i>
+                @else
+                    <i class="fa fa-caret-down fa-6x hover down-vote" aria-hidden="true" data-answer="{{ $answer->id }}"></i>
+                @endif
                 <i class="fa fa-history mt-3 hover" aria-hidden="true"></i>
             </div>
             <div class="post-right-column flex-grow-1 pt-2 pl-3">

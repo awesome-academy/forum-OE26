@@ -23,6 +23,7 @@ import ShareButtons from "./components/ShareButtons";
 import CreateAnswerForm from "./components/CreateAnswerForm";
 import SearchInput from "./components/SearchInput";
 import commentActions from "./components/CommentActions";
+import VoteActions from "./components/VoteActions";
 
 const sidebar = new Sidebar(document);
 const logoutButton = new LogoutButton(document);
@@ -50,3 +51,7 @@ const createAnswerForm =
     && new CreateAnswerForm(document, editor);
 
 /^\/questions\/\d+$/gi.test(window.location.pathname) && commentActions();
+
+const voteActions =
+    /^\/questions\/\d+$/gi.test(window.location.pathname)
+    && new VoteActions(document);
