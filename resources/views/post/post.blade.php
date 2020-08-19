@@ -70,8 +70,8 @@
             </div>
             <div class="d-flex justify-content-between pr-3">
                 <div class="d-flex flex-nowrap">
-                    <a href="#" class="pr-2 small-text">{{ trans('post.share') }}</a>
-                    <a href="#" class="pr-2 small-text">{{ trans('post.edit') }}</a>
+                    <a href="#" class="pr-2 small-text share-btn">{{ trans('post.share') }}</a>
+                    <a href="{{ route('questions.edit', ['question' => $questionId]) }}" class="pr-2 small-text">{{ trans('post.edit') }}</a>
                 </div>
                 <div class="d-flex flex-wrap flex-grow-1 justify-content-end">
                     <div class="user-info text-break alert alert-success p-2 mr-2">
@@ -141,7 +141,7 @@
                 </div>
                 <div class="d-flex justify-content-between pr-3">
                     <div class="d-flex flex-nowrap">
-                        <a href="#" class="pr-2 small-text">{{ trans('post.share') }}</a>
+                        <a href="#" class="pr-2 small-text share-btn">{{ trans('post.share') }}</a>
                         <a href="#" class="pr-2 small-text">{{ trans('post.edit') }}</a>
                     </div>
                     <div class="d-flex flex-wrap flex-grow-1 justify-content-end">

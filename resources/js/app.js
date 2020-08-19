@@ -18,6 +18,8 @@ import CreateQuestionForm from "./components/CreateQuestionForm";
 import MarkdownViewer from "./components/MarkdownViewer";
 import Post from "./components/Post";
 import SortedTypeGroupButton from "./components/SortedTypeGroupButton";
+import EditQuestionForm from "./components/EditQuestionForm";
+import ShareButtons from "./components/ShareButtons";
 
 const sidebar = new Sidebar(document);
 const logoutButton = new LogoutButton(document);
@@ -26,8 +28,14 @@ const editorDiv = document.getElementById("editor");
 const editor = editorDiv && new MarkdownEditor(editorDiv);
 
 const createQuestionForm =
-    window.location.pathname === path.resolve("questions", "create") &&
-    new CreateQuestionForm(document, editor);
+    window.location.pathname === path.resolve("questions", "create")
+    && new CreateQuestionForm(document, editor);
 
 const post = new Post(MarkdownViewer);
 const sortedTypeGroupButton = new SortedTypeGroupButton(document);
+
+const editQuestionForm =
+    /^\/questions\/\d+\/edit$/gi.test(window.location.pathname)
+    && new EditQuestionForm(document, editor);
+
+const shareButtons = new ShareButtons(document);

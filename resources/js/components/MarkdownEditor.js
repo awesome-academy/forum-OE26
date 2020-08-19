@@ -2,8 +2,10 @@ import "codemirror/lib/codemirror.css";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import Editor from "@toast-ui/editor";
 
-class MarkdownEditor {
-    constructor(element) {
+class MarkdownEditor
+{
+    constructor(element)
+    {
         this.editor = new Editor({
             el: element,
             previewStyle: "vertical",
@@ -12,8 +14,14 @@ class MarkdownEditor {
         });
     }
 
-    getMarkdown() {
+    getMarkdown()
+    {
         return this.editor.getMarkdown();
+    }
+
+    setMarkdown(content)
+    {
+        this.editor.setMarkdown(content);
     }
 }
 

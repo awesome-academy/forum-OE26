@@ -21,12 +21,7 @@ Route::group(['middleware' => 'locale'], function () {
 
     Route::get('/', 'HomeController@index')->name('home');
 
-    Route::resource('questions', 'QuestionController')->only([
-        'index',
-        'create',
-        'store',
-        'show',
-    ]);
+    Route::resource('questions', 'QuestionController');
 
     Route::resource('contents', 'ContentController')->only([
         'show',

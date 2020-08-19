@@ -61,7 +61,11 @@ class QuestionPolicy
      */
     public function update(User $user, Question $question)
     {
-        //
+        $isOwner = $user->id === $question->user->id;
+
+        return $isOwner && $user->hasPermission(config('permission.update_question'))
+            ? Response::allow()
+            : Response::deny(trans('messages.permission_deny'));
     }
 
     /**
