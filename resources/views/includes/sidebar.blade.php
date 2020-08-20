@@ -5,12 +5,12 @@
                 {{ trans('bars.posts') }}
             </a>
         </li>
-        <li class="list-group-item bg-color-2">
-            <a href="#" class="color-4 text-decoration-none hover">
+        <li class="list-group-item bg-color-2 active">
+            <a href="{{ route('tags') }}" class="color-4 text-decoration-none hover">
                 {{ trans('bars.tags')  }}
             </a>
         </li>
-        <li class="list-group-item bg-color-2">
+        <li class="list-group-item bg-color-2 active">
             <a href="#" class="color-4 text-decoration-none hover">
                 {{ trans('bars.users')  }}
             </a>

@@ -22,7 +22,11 @@ class QuestionController extends Controller
      */
     public function index(Request $request)
     {
-        $questions = Question::with('votes', 'user')->withCount('answers');
+        $questions = Question::with(
+            'votes',
+            'user',
+            'tags'
+        )->withCount('answers');
 
         $sortedBy = $request->query(config('constants.sorted_by'), config('constants.newest'));
         switch ($sortedBy) {
@@ -148,6 +152,8 @@ class QuestionController extends Controller
             ->with('user')
             ->get();
 
+        $tags = $question->tags()->get();
+
         $user = $question->user()->first();
 
         $answers = $question->answers()
@@ -183,7 +189,7 @@ class QuestionController extends Controller
             'activesNumber',
             'votesNumber',
             'vote',
-            'content',
+            'tags',
             'user',
             'answers',
             'comments',

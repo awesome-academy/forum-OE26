@@ -70,9 +70,11 @@
                 @endif
             </p>
             <div class="d-flex flex-wrap w-100 mb-4">
-                <p class="d-inline-block alert alert-success px-1 py-0 mt-1 mb-0 mr-1">
-                    <!-- Content -->
-                </p>
+                @foreach ($tags as $tag)
+                    <a href="{{ route('tag_question', $tag->id) }}" class="d-inline-block alert alert-success px-1 py-0 my-0 mr-1">
+                        {{ $tag->name }}
+                    </a>
+                @endforeach
             </div>
             <div class="d-flex justify-content-between pr-3">
                 <div class="d-flex flex-nowrap">
@@ -122,7 +124,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ trans('post.close') }}</button>
-                                <button type="submit" form="update-comment" class="btn btn-primary">{{ trans('post.edit') }}</button>
+                                <button type="submit" form="update-comment" class="btn btn-primary">{{ trans('post._edit') }}</button>
                             </div>
                         </div>
                     </div>
@@ -139,7 +141,7 @@
                         <p class="m-0 pl-3 text-break border-bottom">
                             {{ $comment->content . ' - ' . $comment->user->name . '_' . date('F j, Y', strtotime($comment->updated_at)) }}
                             @can('update', $comment)
-                                <a href="#" data-toggle="modal" class="ml-3" data-target="#updateCommentModal" data-id="{{ $comment->id }}" data-content="{{ $comment->content }}">{{ trans('post._edit') }}</a>
+                                <a href="#" data-toggle="modal" class="ml-3" data-target="#updateCommentModal" data-id="{{ $comment->id }}" data-content="{{ $comment->content }}">{{ trans('post.edit') }}</a>
                             @endcan
                             @can('delete', $comment)
                                 <a href="#" class="delete-comment-button ml-1">{{ trans('post.delete') }}</a>
@@ -199,11 +201,6 @@
                         <div class="viewer" content-id="{{ $answer->content->id }}"></div>
                     @endif
                 </p>
-                <div class="d-flex flex-wrap w-100">
-                    <p class="d-inline-block alert alert-success px-1 py-0 mr-1">
-                        <!-- Content -->
-                    </p>
-                </div>
                 <div class="d-flex justify-content-between pr-3">
                     <div class="d-flex flex-nowrap">
                         <a href="#" class="pr-2 small-text share-btn">{{ trans('post.share') }}</a>
@@ -240,7 +237,7 @@
                             <p class="m-0 pl-3 text-break border-bottom">
                                 {{ $comment->content . ' - ' . $comment->user->name . '_' . date('F j, Y', strtotime($comment->updated_at)) }}
                                 @can('update', $comment)
-                                    <a href="#" data-toggle="modal" class="ml-3" data-target="#updateCommentModal" data-id="{{ $comment->id }}" data-content="{{ $comment->content }}">{{ trans('post._edit') }}</a>
+                                    <a href="#" data-toggle="modal" class="ml-3" data-target="#updateCommentModal" data-id="{{ $comment->id }}" data-content="{{ $comment->content }}">{{ trans('post.edit') }}</a>
                                 @endcan
                                 @can('delete', $comment)
                                     <a href="#" class="delete-comment-button ml-1">{{ trans('post.delete') }}</a>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +42,11 @@ Route::group(['middleware' => 'locale'], function () {
     ]);
 
     Route::get('searched', 'SearchController@searchedQuestions')->name('search');
+
+    Route::group(['prefix' => 'tag'], function () {
+        Route::get('/list', 'TagController@list')->name('tags');
+        Route::get('/list-questions/{tag}', 'TagController@listQuestions')->name('tag_question');
+    });
 });
 
 Route::get('search/{query}', 'SearchController@searchQuestion');

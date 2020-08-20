@@ -2,30 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
-class SearchController extends Controller
+class TagController extends Controller
 {
-    public function searchQuestion($query)
+    public function list()
     {
-        return Question::where('title', 'LIKE', '%' . $query . '%')
-            ->limit(config('constants.search_result_limit'))
-            ->pluck('title');
+        $tags = Tag::withCount('questions')
+            ->paginate(config('constants.tags_per_page'));
+
+        return view('tag.list', compact(['tags']));
     }
 
-    public function searchedQuestions(Request $request)
+    public function listQuestions(Request $request, $tag)
     {
-        $query = $request->query(config('constants.query'));
         $sortedBy = $request->query(config('constants.sorted_by'), config('constants.newest'));
 
-        $questions = Question::with(
-            'votes',
-            'user',
-            'tags'
-        )
-            ->withCount('answers')
-            ->where('title', 'LIKE', '%' . $query . '%');
+        $questions = Tag::findOrFail($tag)
+            ->questions()
+            ->with('votes', 'user')
+            ->withCount('answers');
         $numberOfQuestions = $questions->count();
 
         switch ($sortedBy) {
@@ -46,11 +43,11 @@ class SearchController extends Controller
             $answer->sum_votes = $answer->votes->sum('vote');
         });
 
-        return view('search', compact(
+        return view('tag.question', compact(
             'questions',
             'numberOfQuestions',
             'sortedBy',
-            'query'
+            'tag',
         ));
     }
 }

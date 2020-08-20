@@ -31,7 +31,7 @@ return [
     'edit_comment' => 'Sửa bình luận',
     'comment' => 'Bình luận:',
     'close' => 'Đóng',
-    'edit' => 'Sửa',
-    '_edit' => 'sửa',
+    '_edit' => 'Sửa',
     'delete' => 'xoá',
+    'questions' => ' câu hỏi',
 ];

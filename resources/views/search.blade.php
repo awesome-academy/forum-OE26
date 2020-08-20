@@ -73,10 +73,12 @@
                     </a>
                 </div>
                 <div class="d-flex justify-content-between flex-grow-1 pr-3">
-                    <div class="d-flex align-items-start flex-wrap w-100">
-                        <p class="d-inline-block alert alert-success px-1 py-0 my-0 mr-1">
-                            <!-- Content -->
-                        </p>
+                    <div class="d-flex align-items-start flex-wrap w-100 mt-1">
+                        @foreach ($question->tags as $tag)
+                            <a href="{{ route('tag_question', $tag->id) }}" class="d-inline-block alert alert-success px-1 py-0 my-0 mr-1">
+                                {{ $tag->name }}
+                            </a>
+                        @endforeach
                     </div>
                     <div class="d-flex flex-wrap flex-grow-1 justify-content-end align-self-end">
                         <div class="user-info text-break p-2 mr-2">
