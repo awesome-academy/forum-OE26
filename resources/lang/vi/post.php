@@ -27,4 +27,11 @@ return [
     'times' => ' lần',
     'your_answer' => 'Câu trả lời của bạn',
     'review' => 'Công khai câu trả lời',
+    'comment_here' => 'bình luận ở đây',
+    'edit_comment' => 'Sửa bình luận',
+    'comment' => 'Bình luận:',
+    'close' => 'Đóng',
+    'edit' => 'Sửa',
+    '_edit' => 'sửa',
+    'delete' => 'xoá',
 ];

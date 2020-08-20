@@ -31,6 +31,9 @@ class PermissionRoleSeeder extends Seeder
             config('permission.create_answer'),
             config('permission.update_answer'),
             config('permission.delete_answer'),
+            config('permission.create_comment'),
+            config('permission.update_comment'),
+            config('permission.delete_comment'),
         ])
             ->pluck('id')
             ->toArray();
@@ -45,6 +48,10 @@ class PermissionRoleSeeder extends Seeder
             config('permission.update_question'),
             config('permission.create_answer'),
             config('permission.update_answer'),
+            config('permission.delete_question'),
+            config('permission.create_comment'),
+            config('permission.update_comment'),
+            config('permission.delete_comment'),
         ])
             ->pluck('id')
             ->toArray();

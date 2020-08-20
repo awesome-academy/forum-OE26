@@ -7,4 +7,7 @@ return [
     'create_answer' => 'create answer',
     'update_answer' => 'update answer',
     'delete_answer' => 'delete answer',
+    'create_comment' => 'create comment',
+    'update_comment' => 'update comment',
+    'delete_comment' => 'delete comment',
 ];
