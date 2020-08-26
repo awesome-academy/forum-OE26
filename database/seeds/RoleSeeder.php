@@ -25,6 +25,18 @@ class RoleSeeder extends Seeder
                 'name' => config('roles.user'),
                 'description' => 'A normal user can CRUD the posts, another user\'s profiles, ...',
             ],
+            [
+                'name' => config('roles.user_block_comment'),
+                'description' => 'A normal user can not comment',
+            ],
+            [
+                'name' => config('roles.user_block_answer'),
+                'description' => 'A normal user can not answer',
+            ],
+            [
+                'name' => config('roles.user_block_question'),
+                'description' => 'A normal user can not question',
+            ],
         ]);
     }
 }
