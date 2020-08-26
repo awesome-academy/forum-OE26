@@ -34,4 +34,5 @@ return [
     '_edit' => 'Sửa',
     'delete' => 'xoá',
     'questions' => ' câu hỏi',
+    'edit_answer' => 'Sửa câu trả lời',
 ];

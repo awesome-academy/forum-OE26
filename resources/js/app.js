@@ -24,6 +24,7 @@ import CreateAnswerForm from "./components/CreateAnswerForm";
 import SearchInput from "./components/SearchInput";
 import commentActions from "./components/CommentActions";
 import VoteActions from "./components/VoteActions";
+import EditAnswerForm from "./components/EditAnswerForm";
 
 const sidebar = new Sidebar(document);
 const logoutButton = new LogoutButton(document);
@@ -55,3 +56,7 @@ const createAnswerForm =
 const voteActions =
     /^\/questions\/\d+$/gi.test(window.location.pathname)
     && new VoteActions(document);
+
+const editAnswerForm =
+    /^\/answers\/\d+\/edit$/gi.test(window.location.pathname)
+    && new EditAnswerForm(document, editor);

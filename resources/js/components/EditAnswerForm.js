@@ -1,11 +1,11 @@
 import path from "path";
 
-class EditQuestionForm
+class EditAnswerForm
 {
     constructor(d, bodyEditor)
     {
-        this.form = d.getElementById("edit-question-form");
-        this.summitButton = d.getElementById("edit-question-submit");
+        this.form = d.getElementById("edit-answer-form");
+        this.summitButton = d.getElementById("edit-answer-submit");
         this.bodyEditor = bodyEditor;
         this.contentId = this.form.getAttribute("content-id").trim();
 
@@ -17,6 +17,7 @@ class EditQuestionForm
     submit(e)
     {
         if (this.form && this.summitButton && this.bodyEditor) {
+            console.log('object');
             e.preventDefault();
 
             const input = document.createElement("input");
@@ -38,4 +39,4 @@ class EditQuestionForm
     }
 }
 
-export default EditQuestionForm;
+export default EditAnswerForm;

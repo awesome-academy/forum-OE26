@@ -20,4 +20,5 @@ return [
     'question' => 1,
     'answer' => 2,
     'tags_per_page' => 12,
+    'users_per_page' => 10,
 ];

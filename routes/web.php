@@ -21,6 +21,7 @@ Route::group(['middleware' => 'locale'], function () {
     Auth::routes();
 
     Route::get('/', 'HomeController@index')->name('home');
+    Route::put('/', 'HomeController@editProfile')->name('profile');
 
     Route::resource('questions', 'QuestionController');
 
@@ -47,6 +48,15 @@ Route::group(['middleware' => 'locale'], function () {
         Route::get('/list', 'TagController@list')->name('tags');
         Route::get('/list-questions/{tag}', 'TagController@listQuestions')->name('tag_question');
     });
+
+    Route::group(['prefix' => 'admin'], function () {
+        Route::get('/dashboard', 'AdminController@index')->name('admin');
+        Route::get('/tag', 'AdminController@createTag')->name('create_tag');
+        Route::post('/tag', 'AdminController@storeTag')->name('store_tag');
+        Route::put('/role', 'AdminController@updateUserRole')->name('update_role');
+    });
+
+    Route::get('history/{type}/{id}', 'HistoryController@getHistory')->name('history');
 });
 
 Route::get('search/{query}', 'SearchController@searchQuestion');
