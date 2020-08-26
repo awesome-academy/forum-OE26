@@ -135,6 +135,10 @@ class QuestionController extends Controller
 
         $votesNumber = $question->votes()->sum('vote');
 
+        $vote = $question->votes()
+            ->where('user_id', Auth::id())
+            ->first();
+
         $maxContentVersion = $question->contents()->max('version');
         $content = $question->contents()
             ->where('version', $maxContentVersion)
@@ -160,6 +164,10 @@ class QuestionController extends Controller
                 ->first();
 
             $answer->sum_votes = $answer->votes->sum('vote');
+
+            $answer->vote =  $answer->votes()
+                ->where('user_id', Auth::id())
+                ->first();
         });
 
         $comments = $question->comments()
@@ -168,11 +176,14 @@ class QuestionController extends Controller
 
         return view('post.post', compact(
             'questionId',
+            'question',
             'title',
             'asked',
             'viewsNumber',
             'activesNumber',
             'votesNumber',
+            'vote',
+            'content',
             'user',
             'answers',
             'comments',
