@@ -31,7 +31,7 @@ return [
     'edit_comment' => 'Edit comment',
     'comment' => 'Comment:',
     'close' => 'Close',
-    'edit' => 'Edit',
-    '_edit' => 'edit',
+    '_edit' => 'Edit',
     'delete' => 'delete',
+    'questions' => ' questions',
 ];

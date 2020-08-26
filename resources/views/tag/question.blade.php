@@ -13,7 +13,7 @@
         <h5 class="align-self-end mb-0">
             {{ $numberOfQuestions . trans('list.questions') }}
         </h5>
-        <form action="{{ route('questions.index') }}" id="sorted-options-form" method="get">
+        <form action="{{ route('tag_question', $tag) }}" id="sorted-options-form" method="get">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-secondary">
                     @if ($sortedBy === config('constants.newest'))

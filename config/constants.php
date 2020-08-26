@@ -19,4 +19,5 @@ return [
     'no_vote' => 0,
     'question' => 1,
     'answer' => 2,
+    'tags_per_page' => 12,
 ];
