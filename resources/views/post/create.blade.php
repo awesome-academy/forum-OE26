@@ -24,6 +24,15 @@
             </small>
             <div class="form-control" id="editor"></div>
         </div>
+        <div class="form-group">
+            <label>{{ trans('create.tags') }}</label>
+            @foreach ($tags as $tag)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="tags[]" id="{{ $tag->id }}" value="{{ $tag->id }}">
+                    <label class="form-check-label" for="{{ $tag->id }}">{{ $tag->name }}</label>
+                </div>
+            @endforeach
+        </div>
     </form>
     <button class="btn text-nowrap px-2 bg-color-2 color-4 review-btn" id="new-question-submit">
         {{ trans('create.review') }}

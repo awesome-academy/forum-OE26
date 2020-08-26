@@ -34,4 +34,5 @@ return [
     '_edit' => 'Edit',
     'delete' => 'delete',
     'questions' => ' questions',
+    'edit_answer' => 'Edit answer',
 ];
