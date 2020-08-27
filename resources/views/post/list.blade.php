@@ -3,11 +3,13 @@
 @section('content')
     <div class="row justify-content-between flex-nowrap">
         <h2 class="text-break color-1">{{ trans('list.all_questions') }}</h2>
-        <form action="{{ route('questions.create') }}" method="get">
-            <button type="submit" class="btn text-nowrap px-2 bg-color-2 color-4">
-                {{ trans('list.ask_question') }}
-            </button>
-        </form>
+        @can('create', Question::class)
+            <form action="{{ route('questions.create') }}" method="get">
+                <button type="submit" class="btn text-nowrap px-2 bg-color-2 color-4">
+                    {{ trans('post.ask_question') }}
+                </button>
+            </form>
+        @endcan
     </div>
     <div class="row justify-content-between pt-3 pb-1 border-bottom">
         <h5 class="align-self-end mb-0">

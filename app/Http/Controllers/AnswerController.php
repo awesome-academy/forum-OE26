@@ -46,7 +46,20 @@ class AnswerController extends Controller
      */
     public function edit(Answer $answer)
     {
-        //
+        $answerId = $answer->id;
+
+        $maxContentVersion = $answer->contents()->max('version');
+        $content = $answer->contents()
+            ->where('version', $maxContentVersion)
+            ->first();
+
+        $questionId = $answer->question->id;
+
+        return view('answer.edit', compact(
+            'answerId',
+            'questionId',
+            'content',
+        ));
     }
 
     /**
@@ -56,9 +69,16 @@ class AnswerController extends Controller
      * @param  \App\Models\Answer  $answer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Answer $answer)
+    public function update(AnswerRequest $request, Answer $answer)
     {
-        //
+        $maxContentVersion = $answer->contents()->max('version');
+        $answer->contents()
+            ->create([
+                'content' => $request->content,
+                'version' => $maxContentVersion + 1,
+            ]);
+
+        return redirect()->route('questions.show', $answer->question->id);
     }
 
     /**

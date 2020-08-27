@@ -4,7 +4,9 @@ class CreateAnswerForm {
         this.submitButton = d.getElementById("new-answer-submit");
         this.bodyEditor = bodyEditor;
 
-        this.submitButton.addEventListener("click", this.submit.bind(this));
+        if (this.submitButton) {
+            this.submitButton.addEventListener("click", this.submit.bind(this));
+        }
     }
 
     submit(e) {

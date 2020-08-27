@@ -2,7 +2,7 @@
     <button class="mr-3 border-0 btn-dark color-3 side-bar-btn" id="sidebarBtn">
         <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
     </button>
-    <a class="navbar-brand" href="{{ route('home') }}">
+    <a class="navbar-brand" href="{{ route('questions.index') }}">
         <i class="fa fa-2x fa-carrot color-4"></i>
     </a>
     <div class="navbar-nav flex-grow-1">
@@ -34,7 +34,7 @@
                     <a class="dropdown-item color-3" href="#">
                         {{ trans('bars.notifications') }}
                     </a>
-                    <a class="dropdown-item color-3" href="#">
+                    <a class="dropdown-item color-3" href="{{ route('home') }}">
                         {{ trans('bars.profile') }}
                     </a>
                     @if (App::isLocale('en'))
