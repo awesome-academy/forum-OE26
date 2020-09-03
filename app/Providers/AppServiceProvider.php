@@ -8,6 +8,12 @@ use App\Repositories\Comment\CommentRepository;
 use App\Repositories\Comment\CommentRepositoryInterface;
 use App\Repositories\Question\QuestionRepository;
 use App\Repositories\Question\QuestionRepositoryInterface;
+use App\Repositories\Role\RoleRepository;
+use App\Repositories\Role\RoleRepositoryInterface;
+use App\Repositories\Tag\TagRepository;
+use App\Repositories\Tag\TagRepositoryInterface;
+use App\Repositories\User\UserRepository;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -32,6 +38,21 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             QuestionRepositoryInterface::class,
             QuestionRepository::class
+        );
+
+        $this->app->singleton(
+            RoleRepositoryInterface::class,
+            RoleRepository::class
+        );
+
+        $this->app->singleton(
+            TagRepositoryInterface::class,
+            TagRepository::class
+        );
+
+        $this->app->singleton(
+            UserRepositoryInterface::class,
+            UserRepository::class
         );
     }
 
