@@ -3,16 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
-use App\Models\Answer;
 use App\Models\Comment;
-use App\Models\Question;
+use App\Repositories\Answer\AnswerRepositoryInterface;
+use App\Repositories\Comment\CommentRepositoryInterface;
+use App\Repositories\Question\QuestionRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function __construct()
-    {
+    protected $answerRepository;
+    protected $commentRepository;
+    protected $questionRepository;
+
+    public function __construct(
+        AnswerRepositoryInterface $answerRepository,
+        CommentRepositoryInterface $commentRepository,
+        QuestionRepositoryInterface $questionRepository
+    ) {
+        $this->answerRepository = $answerRepository;
+        $this->commentRepository = $commentRepository;
+        $this->questionRepository = $questionRepository;
+
         $this->middleware('auth');
         $this->authorizeResource(Comment::class, 'comment');
     }
@@ -25,16 +38,21 @@ class CommentController extends Controller
      */
     public function store(CommentRequest $request)
     {
-        $comment = Question::findOrFail($request->question_id)->comments();
+        try {
+            $question = $this->questionRepository->find($request->question_id);
 
-        if (isset($request->answer_id)) {
-            $comment = Answer::findOrFail($request->answer_id)->comments();
+            if (isset($request->answer_id)) {
+                $answer = $this->answerRepository->find($request->answer_id);
+            }
+        } catch (ModelNotFoundException $exception) {
+            return view('404');
         }
 
-        $comment->create([
+        $data = [
             'user_id' => Auth::id(),
             'content' => $request->content,
-        ]);
+        ];
+        $this->commentRepository->createFromModel(isset($answer) ? $answer : $question, $data);
 
         return redirect()->route('questions.show', $request->question_id);
     }
@@ -48,9 +66,10 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, Comment $comment)
     {
-        $comment->update([
+        $data = [
             'content' => $request->content,
-        ]);
+        ];
+        $this->commentRepository->update($comment->id, $data);
 
         return redirect()->route('questions.show', $request->question_id);
     }
@@ -63,7 +82,7 @@ class CommentController extends Controller
      */
     public function destroy(Request $request, Comment $comment)
     {
-        $comment->delete();
+        $this->commentRepository->delete($comment->id);
 
         return redirect()->route('questions.show', $request->question_id);
     }
