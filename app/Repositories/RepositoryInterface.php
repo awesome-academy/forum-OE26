@@ -10,6 +10,8 @@ interface RepositoryInterface
 {
     public function create(array $data = []): Model;
 
+    public function save(Model $model): bool;
+
     public function find(int $id): Model;
 
     public function paginate(
@@ -22,5 +24,9 @@ interface RepositoryInterface
 
     public function update(int $id, array $data = []): bool;
 
+    public function selfUpdate(Model $model, array $data): bool;
+
     public function delete(int $id): bool;
+
+    public function selfDelete(Model $model): bool;
 }

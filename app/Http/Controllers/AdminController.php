@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
-use App\Models\Tag;
-use App\Models\User;
+use App\Repositories\Role\RoleRepositoryInterface;
+use App\Repositories\Tag\TagRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AdminController extends Controller
 {
-    public function __construct()
-    {
+    protected $roleRepository;
+    protected $tagRepository;
+    protected $userRepository;
+
+    public function __construct(
+        RoleRepositoryInterface $roleRepository,
+        TagRepositoryInterface $tagRepository,
+        UserRepositoryInterface $userRepository
+    ) {
+        $this->roleRepository = $roleRepository;
+        $this->tagRepository = $tagRepository;
+        $this->userRepository = $userRepository;
+
         $this->middleware('auth');
     }
 
@@ -20,13 +30,9 @@ class AdminController extends Controller
     {
         Gate::authorize('dashboard');
 
-        $users = User::withCount('questions')
-            ->withCount('answers')
-            ->withCount('comments')
-            ->withCount('votes')
-            ->paginate(config('constants.users_per_page'));
+        $users = $this->userRepository->getUserDashboard(config('constants.users_per_page'));
 
-        $roles = Role::all();
+        $roles = $this->roleRepository->all();
 
         return view('admin.dashboard', compact(
             'users',
@@ -38,11 +44,11 @@ class AdminController extends Controller
     {
         Gate::authorize('dashboard');
 
-        $user = User::findOrFail($request->userId);
+        $user = $this->userRepository->find($request->userId);
         Gate::authorize('change_role', $user);
 
-        $role = Role::where('name', $request->role)->firstOrFail();
-        $user->update(['role_id' => $role->id]);
+        $role = $this->roleRepository->findByName($request->role);
+        $this->userRepository->selfUpdate($user, ['role_id' => $role->id]);
 
         return redirect()->route('admin');
     }
@@ -58,7 +64,7 @@ class AdminController extends Controller
     {
         Gate::authorize('dashboard');
 
-        Tag::create($request->all());
+        $this->tagRepository->create($request->all());
 
         return redirect()->route('create_tag');
     }
