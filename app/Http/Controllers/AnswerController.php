@@ -4,13 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AnswerRequest;
 use App\Models\Answer;
-use Illuminate\Http\Request;
+use App\Repositories\Answer\AnswerRepositoryInterface;
+use App\Repositories\Content\ContentRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
 class AnswerController extends Controller
 {
-    public function __construct()
-    {
+    protected $answerRepository;
+    protected $contentRepository;
+
+    public function __construct(
+        AnswerRepositoryInterface $answerRepository,
+        ContentRepositoryInterface $contentRepository
+    ) {
+        $this->answerRepository = $answerRepository;
+        $this->contentRepository = $contentRepository;
+
         $this->middleware('auth');
         $this->authorizeResource(Answer::class, 'answer');
     }
@@ -23,19 +32,17 @@ class AnswerController extends Controller
      */
     public function store(AnswerRequest $request)
     {
-        $questionId = $request->question_id;
-        $answer = Answer::create([
+        $answer = $this->answerRepository->create([
             'user_id' => Auth::id(),
-            'question_id' => $questionId,
+            'question_id' => $request->question_id,
         ]);
 
-        $answer->contents()
-            ->create([
-                'content' => $request->content,
-                'version' => config('constants.initial_version'),
-            ]);
+        $this->contentRepository->createFromModel($answer, [
+            'content' => $request->content,
+            'version' => config('constants.initial_version'),
+        ]);
 
-        return redirect()->route('questions.show', $questionId);
+        return redirect()->route('questions.show', $request->question_id);
     }
 
     /**
@@ -46,13 +53,10 @@ class AnswerController extends Controller
      */
     public function edit(Answer $answer)
     {
+        $maxContentVersion = $this->contentRepository->maxVersion($answer);
+        $content = $this->contentRepository->findByVersion($maxContentVersion, $answer);
+
         $answerId = $answer->id;
-
-        $maxContentVersion = $answer->contents()->max('version');
-        $content = $answer->contents()
-            ->where('version', $maxContentVersion)
-            ->first();
-
         $questionId = $answer->question->id;
 
         return view('answer.edit', compact(
@@ -71,12 +75,11 @@ class AnswerController extends Controller
      */
     public function update(AnswerRequest $request, Answer $answer)
     {
-        $maxContentVersion = $answer->contents()->max('version');
-        $answer->contents()
-            ->create([
-                'content' => $request->content,
-                'version' => $maxContentVersion + 1,
-            ]);
+        $maxContentVersion = $this->contentRepository->maxVersion($answer);
+        $this->contentRepository->createFromModel($answer, [
+            'content' => $request->content,
+            'version' => $maxContentVersion + 1,
+        ]);
 
         return redirect()->route('questions.show', $answer->question->id);
     }

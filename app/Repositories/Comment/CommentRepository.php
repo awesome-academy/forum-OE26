@@ -4,9 +4,10 @@ namespace App\Repositories\Comment;
 
 use App\Models\Comment;
 use App\Repositories\BaseRepository;
+use App\Repositories\PolymorphicRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class CommentRepository extends BaseRepository implements CommentRepositoryInterface
+class CommentRepository extends BaseRepository implements CommentRepositoryInterface, PolymorphicRepositoryInterface
 {
     public function getModel(): string
     {
@@ -15,13 +16,13 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
 
     public function createFromModel(Model $model, array $data = []): Model
     {
-        if ($model) {
-            $relation = $model->comments();
-            if ($relation && isset($data['user_id']) && isset($data['content'])) {
-                return $relation->create($data);
-            }
-
-            return null;
+        if (
+            $model
+            && isset($data['user_id'])
+            && isset($data['content'])
+            && $relation = $model->comments()
+        ) {
+            return $relation->create($data);
         }
 
         return null;

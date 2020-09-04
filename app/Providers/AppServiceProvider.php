@@ -6,6 +6,8 @@ use App\Repositories\Answer\AnswerRepository;
 use App\Repositories\Answer\AnswerRepositoryInterface;
 use App\Repositories\Comment\CommentRepository;
 use App\Repositories\Comment\CommentRepositoryInterface;
+use App\Repositories\Content\ContentRepository;
+use App\Repositories\Content\ContentRepositoryInterface;
 use App\Repositories\Question\QuestionRepository;
 use App\Repositories\Question\QuestionRepositoryInterface;
 use App\Repositories\Role\RoleRepository;
@@ -33,6 +35,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(
             CommentRepositoryInterface::class,
             CommentRepository::class
+        );
+
+        $this->app->singleton(
+            ContentRepositoryInterface::class,
+            ContentRepository::class
         );
 
         $this->app->singleton(
