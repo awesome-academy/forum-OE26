@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Role;
 use App\Providers\RouteServiceProvider;
-use App\Models\User;
+use App\Repositories\Role\RoleRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -32,13 +32,21 @@ class RegisterController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    protected $roleRepository;
+    protected $userRepository;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct(
+        RoleRepositoryInterface $roleRepository,
+        UserRepositoryInterface $userRepository
+    ) {
+        $this->roleRepository = $roleRepository;
+        $this->userRepository = $userRepository;
+
         $this->middleware('guest');
     }
 
@@ -65,11 +73,11 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $roleUserId = Role::where('name', config('roles.user'))
-            ->first()
+        $roleUserId = $this->roleRepository
+            ->findByName(config('roles.user'))
             ->id;
 
-        return User::create([
+        return $this->userRepository->create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
