@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
-use Illuminate\Http\Request;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
+    protected $userRepository;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
-    {
+    public function __construct(
+        UserRepositoryInterface $userRepository
+    ) {
+        $this->userRepository = $userRepository;
+
         $this->middleware('auth');
     }
 
@@ -34,11 +39,8 @@ class HomeController extends Controller
 
     public function editProfile(UserRequest $request)
     {
-        $user = Auth::user();
-        $user->update($request->all());
+        $this->userRepository->update(Auth::id(), $request->all());
 
-        return view('home', compact([
-            'user',
-        ]));
+        return redirect()->route('home');
     }
 }
