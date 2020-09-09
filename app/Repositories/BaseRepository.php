@@ -3,8 +3,10 @@
 namespace App\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 abstract class BaseRepository implements RepositoryInterface
 {
@@ -37,7 +39,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->model->findOrFail($id);
     }
 
-    public function paginate(
+    public function show(
         string $sortedField = 'created_at',
         bool $asc = true,
         int $itemsPerPage
@@ -90,5 +92,66 @@ abstract class BaseRepository implements RepositoryInterface
     public function selfDelete(Model $model): bool
     {
         return $model->delete();
+    }
+
+    public function with(?Builder $query, string ...$relationships): Builder
+    {
+        if ($query) {
+            return $query->with($relationships);
+        }
+
+        return $this->model->with($relationships);
+    }
+
+    public function withCount(?Builder $query, string ...$relationships): Builder
+    {
+        if ($query) {
+            return $query->withCount($relationships);
+        }
+
+        return $this->model->withCount($relationships);
+    }
+
+    public function orderByAsc(Builder $query, string ...$fields): Builder
+    {
+        foreach ($fields as $field) {
+            $query = $query->orderBy($field);
+        }
+
+        return $query;
+    }
+
+    public function orderByDesc(Builder $query, string ...$fields): Builder
+    {
+        foreach ($fields as $field) {
+            $query = $query->orderByDesc($field);
+        }
+
+        return $query;
+    }
+
+    public function paginate(Builder $query, int $itemsPerPage): LengthAwarePaginator
+    {
+        return $query->paginate($itemsPerPage);
+    }
+
+    public function count(): int
+    {
+        return $this->model->count();
+    }
+
+    public function sync(Model $model, string $relatedRelation, array $data): void
+    {
+        $relation = $model->$relatedRelation();
+        if (get_class($relation) === BelongsToMany::class) {
+            $relation->sync($data);
+        } else {
+            abort(404);
+        }
+    }
+
+    public function get(Builder $query): Collection
+    {
+        return $query->get();
     }
 }

@@ -15,11 +15,10 @@ class ContentRepository extends BaseRepository implements ContentRepositoryInter
         return Content::class;
     }
 
-    public function createFromModel(Model $model, array $data = []): Model
+    public function createFromModel(Model $model, array $data = []): ?Model
     {
         if (
-            $model
-            && isset($data['content'])
+            isset($data['content'])
             && isset($data['version'])
             && $relation = $model->contents()
         ) {
@@ -31,16 +30,16 @@ class ContentRepository extends BaseRepository implements ContentRepositoryInter
 
     public function maxVersion(Model $model): int
     {
-        if ($model && $relation = $model->contents()) {
+        if ($relation = $model->contents()) {
             return $relation->max('version');
         }
 
         return 0;
     }
 
-    public function findByVersion(int $version, Model $model): Model
+    public function findByVersion(int $version, Model $model): ?Model
     {
-        if ($model && $relation = $model->contents()) {
+        if ($relation = $model->contents()) {
             return $relation
                 ->where('version', $version)
                 ->first();;
@@ -49,9 +48,9 @@ class ContentRepository extends BaseRepository implements ContentRepositoryInter
         return null;
     }
 
-    public function getHistory(Model $model): Collection
+    public function getHistory(Model $model): ?Collection
     {
-        if ($model && $relation = $model->contents()) {
+        if ($relation = $model->contents()) {
             return $relation
                 ->orderByDesc('version')
                 ->get();

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,7 +15,7 @@ interface RepositoryInterface
 
     public function find(int $id): Model;
 
-    public function paginate(
+    public function show(
         string $sortedField = 'created_at',
         bool $asc = true,
         int $itemsPerPage
@@ -29,4 +30,20 @@ interface RepositoryInterface
     public function delete(int $id): bool;
 
     public function selfDelete(Model $model): bool;
+
+    public function with(?Builder $query, string ...$relationships): Builder;
+
+    public function withCount(?Builder $query, string ...$relationships): Builder;
+
+    public function orderByAsc(Builder $query, string ...$fields): Builder;
+
+    public function orderByDesc(Builder $query, string ...$fields): Builder;
+
+    public function paginate(Builder $query, int $itemsPerPage): LengthAwarePaginator;
+
+    public function count(): int;
+
+    public function sync(Model $model, string $relatedRelationName, array $data): void;
+
+    public function get(Builder $query): Collection;
 }
