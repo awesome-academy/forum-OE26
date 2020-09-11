@@ -135,8 +135,12 @@ abstract class BaseRepository implements RepositoryInterface
         return $query->paginate($itemsPerPage);
     }
 
-    public function count(): int
+    public function count(?Builder $query): int
     {
+        if ($query) {
+            return $query->count();
+        }
+
         return $this->model->count();
     }
 

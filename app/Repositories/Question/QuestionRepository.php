@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection as SupportCollection;
 
 class QuestionRepository extends BaseRepository implements QuestionRepositoryInterface
 {
@@ -19,8 +21,8 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
 
     public function countVotesForPage(LengthAwarePaginator $page): void
     {
-        $page->map(function ($answer) {
-            $answer->sum_votes = $answer->votes->sum('vote');
+        $page->map(function ($item) {
+            $item->sum_votes = $item->votes->sum('vote');
         });
     }
 
@@ -94,5 +96,17 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
         });
 
         return $answers;
+    }
+
+    public function search(string $query): SupportCollection
+    {
+        return Question::where('title', 'LIKE', '%' . $query . '%')
+            ->limit(config('constants.search_result_limit'))
+            ->pluck('title');
+    }
+
+    public function addSearchCondition(Builder $query, string $searchString): Builder
+    {
+        return $query->where('title', 'LIKE', '%' . $searchString . '%');
     }
 }

@@ -41,7 +41,7 @@ interface RepositoryInterface
 
     public function paginate(Builder $query, int $itemsPerPage): LengthAwarePaginator;
 
-    public function count(): int;
+    public function count(?Builder $query): int;
 
     public function sync(Model $model, string $relatedRelationName, array $data): void;
 

@@ -21,4 +21,6 @@ return [
     'answer' => 2,
     'tags_per_page' => 12,
     'users_per_page' => 10,
+    'search_query' => 'search_query',
+    'default_search_query' => '',
 ];
