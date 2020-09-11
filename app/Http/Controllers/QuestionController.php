@@ -4,15 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\QuestionRequest;
 use App\Models\Question;
-use App\Models\Tag;
+use App\Repositories\Comment\CommentRepositoryInterface;
+use App\Repositories\Content\ContentRepositoryInterface;
+use App\Repositories\Question\QuestionRepositoryInterface;
+use App\Repositories\Tag\TagRepositoryInterface;
+use App\Repositories\Vote\VoteRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class QuestionController extends Controller
 {
-    public function __construct()
-    {
+    protected $commentRepository;
+    protected $contentRepository;
+    protected $questionRepository;
+    protected $tagRepository;
+    protected $voteRepository;
+
+    public function __construct(
+        CommentRepositoryInterface $commentRepository,
+        ContentRepositoryInterface $contentRepository,
+        QuestionRepositoryInterface $questionRepository,
+        TagRepositoryInterface $tagRepository,
+        VoteRepositoryInterface $voteRepository
+    ) {
+        $this->commentRepository = $commentRepository;
+        $this->contentRepository = $contentRepository;
+        $this->questionRepository = $questionRepository;
+        $this->tagRepository = $tagRepository;
+        $this->voteRepository = $voteRepository;
+
         $this->middleware('auth')->only(['create', 'store']);
     }
 
@@ -23,32 +44,36 @@ class QuestionController extends Controller
      */
     public function index(Request $request)
     {
-        $questions = Question::with(
-            'votes',
-            'user',
-            'tags'
-        )->withCount('answers');
+        $questions = null;
+        $questions = $this->questionRepository->with($questions, 'votes', 'user', 'tags');
+        $questions = $this->questionRepository->withCount($questions, 'answers');
 
-        $sortedBy = $request->query(config('constants.sorted_by'), config('constants.newest'));
-        switch ($sortedBy) {
-            case config('constants.active'):
-                $questions = $questions->orderByDesc('activities_count');
-                break;
-            case config('constants.unanswered'):
-                $questions = $questions->withCount('answers')
-                    ->orderBy('answers_count')
-                    ->orderBy('created_at');
-                break;
-            default:
-                $questions = $questions->orderByDesc('created_at');
+        $sortedBy = $request->query(config('constants.sorted_by'));
+
+        if (isset($sortedBy)) {
+            $request->session()
+                ->put(config('constants.sorted_by'), $sortedBy);
+        } else {
+            $sortedBy = $request->session()
+                ->get(config('constants.sorted_by'), config('constants.newest'));
         }
 
-        $questions = $questions->paginate(config('constants.questions_per_page'));
-        $questions->map(function ($answer) {
-            $answer->sum_votes = $answer->votes->sum('vote');
-        });
+        switch ($sortedBy) {
+            case config('constants.active'):
+                $questions = $this->questionRepository->orderByDesc($questions, 'activities_count');
+                break;
+            case config('constants.unanswered'):
+                $questions = $this->questionRepository->withCount($questions, 'answers');
+                $questions = $this->questionRepository->orderByAsc($questions, 'answers_count', 'created_at');
+                break;
+            default:
+                $questions = $this->questionRepository->orderByDesc($questions, 'created_at');
+        }
 
-        $numberOfQuestions = Question::count();
+        $questions = $this->questionRepository->paginate($questions, config('constants.questions_per_page'));
+        $this->questionRepository->countVotesForPage($questions);
+
+        $numberOfQuestions = $this->questionRepository->count();
 
         return view('post.list', compact(
             'questions',
@@ -66,7 +91,7 @@ class QuestionController extends Controller
     {
         $this->authorize('create', Question::class);
 
-        $tags = Tag::all();
+        $tags = $this->tagRepository->all();
 
         return view('post.create', compact([
             'tags',
@@ -83,7 +108,7 @@ class QuestionController extends Controller
     {
         $this->authorize('create', Question::class);
 
-        $question = Question::create([
+        $question = $this->questionRepository->create([
             'user_id' => Auth::id(),
             'title' => $request->title,
             'views_number' => config('constants.initial_view_number'),
@@ -96,7 +121,12 @@ class QuestionController extends Controller
                 'version' => config('constants.initial_version'),
             ]);
 
-        $question->tags()->sync($request->tags);
+        $this->contentRepository->createFromModel($question, [
+            'content' => $request->content,
+            'version' => config('constants.initial_version'),
+        ]);
+
+        $this->questionRepository->sync($question, 'tags', $request->tags);
 
         return redirect()->route('questions.show', $question->id);
     }
@@ -109,83 +139,34 @@ class QuestionController extends Controller
      */
     public function show(Question $question)
     {
-        $question->update(['views_number' => $question->views_number + config('constants.increasing_views_each_request')]);
+        $this->questionRepository->update($question->id, ['views_number' => $question->views_number + config('constants.increasing_views_each_request')]);
 
         $questionId = $question->id;
-        $title = $question->title;
 
-        $subtract = Carbon::now()->diff(Carbon::parse($question->created_at));
-        $asked = $subtract->y > config('constants.zero')
-            ? [
-                'y' => $subtract->y,
-                'm' => $subtract->m
-            ]
-            : ($subtract->m > config('constants.zero')
-                ? [
-                    'm' => $subtract->m,
-                    'd' => $subtract->d
-                ]
-                : ($subtract->d > config('constants.zero')
-                    ? [
-                        'd' => $subtract->d,
-                        'h' => $subtract->h
-                    ]
-                    : ($subtract->h > config('constants.zero')
-                        ? [
-                            'h' => $subtract->h,
-                            'i' => $subtract->i
-                        ]
-                        : [
-                            'i' => $subtract->i,
-                            's' => $subtract->s
-                        ])));
+        $title = $this->questionRepository->getTitle($question);
+
+        $asked = $this->questionRepository->getAskedTimestamp($question);
 
         $viewsNumber = $question->views_number;
 
         $activesNumber = $question->activities_count;
 
-        $votesNumber = $question->votes()->sum('vote');
+        $votesNumber = $this->voteRepository->sumVote($question);
 
-        $vote = $question->votes()
-            ->where('user_id', Auth::id())
-            ->first();
+        $vote = $this->voteRepository->getVoteByUserId($question, Auth::id());
 
-        $maxContentVersion = $question->contents()->max('version');
-        $content = $question->contents()
-            ->where('version', $maxContentVersion)
-            ->first();
+        $maxContentVersion = $this->contentRepository->maxVersion($question);
+        $content = $this->contentRepository->findByVersion($maxContentVersion, $question);
 
-        $comments = $question->comments()
-            ->with('user')
-            ->get();
+        $comments = $this->commentRepository->getCommentsWithUser($question);
 
-        $tags = $question->tags()->get();
+        $tags = $this->questionRepository->getTags($question);
 
-        $user = $question->user()->first();
+        $user = $this->questionRepository->getUser($question);
 
-        $answers = $question->answers()
-            ->with([
-                'user',
-                'votes',
-                'comments.user',
-            ])
-            ->get();
-        $answers->map(function ($answer) {
-            $maxContentVersion = $answer->contents()->max('version');
-            $answer->content = $answer->contents()
-                ->where('version', $maxContentVersion)
-                ->first();
+        $answers = $this->questionRepository->getAnswers($question);
 
-            $answer->sum_votes = $answer->votes->sum('vote');
-
-            $answer->vote =  $answer->votes()
-                ->where('user_id', Auth::id())
-                ->first();
-        });
-
-        $comments = $question->comments()
-            ->with('user')
-            ->get();
+        $comments = $this->commentRepository->getCommentsWithUser($question);
 
         return view('post.post', compact(
             'questionId',
@@ -215,12 +196,11 @@ class QuestionController extends Controller
         $this->authorize('update', $question);
 
         $questionId = $question->id;
-        $title = $question->title;
 
-        $maxContentVersion = $question->contents()->max('version');
-        $content = $question->contents()
-            ->where('version', $maxContentVersion)
-            ->first();
+        $title = $this->questionRepository->getTitle($question);
+
+        $maxContentVersion = $this->contentRepository->maxVersion($question);
+        $content = $this->contentRepository->findByVersion($maxContentVersion, $question);
 
         return view('post.edit', compact(
             'questionId',
@@ -240,18 +220,17 @@ class QuestionController extends Controller
     {
         $this->authorize('update', $question);
 
-        $question->update([
+        $this->questionRepository->update($question->id, [
             'title' => $request->title,
             'activities_count' => $question->activities_count + config('increasing_activities_count'),
             'active_at' => Carbon::now(),
         ]);
 
-        $maxContentVersion = $question->contents()->max('version');
-        $question->contents()
-            ->create([
-                'content' => $request->content,
-                'version' => $maxContentVersion + 1,
-            ]);
+        $maxContentVersion = $this->contentRepository->maxVersion($question);
+        $this->contentRepository->createFromModel($question, [
+            'content' => $request->content,
+            'version' => $maxContentVersion + 1,
+        ]);
 
         return redirect()->route('questions.show', $question->id);
     }

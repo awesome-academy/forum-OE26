@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 interface AnswerRepositoryInterface
 {
-    public function getQuestion(Model $answer): Model;
+    public function getQuestion(Model $answer): ?Model;
 }

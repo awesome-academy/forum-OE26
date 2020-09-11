@@ -13,9 +13,9 @@ class AnswerRepository extends BaseRepository implements AnswerRepositoryInterfa
         return Answer::class;
     }
 
-    public function getQuestion(Model $answer): Model
+    public function getQuestion(Model $answer): ?Model
     {
-        if ($answer && $question = $answer->question) {
+        if ($question = $answer->question) {
             return $question;
         }
 
