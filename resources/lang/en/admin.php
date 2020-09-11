@@ -16,5 +16,8 @@ return [
     'description' => 'Description',
     'create' => 'Create',
     'logout' => 'Logout',
-    'search' => 'Search for...'
+    'search' => 'Search for...',
+    'chart' => 'Chart',
+    'number_of_users' => 'Number of Users',
+    'blank' => '',
 ];

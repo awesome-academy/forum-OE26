@@ -23,4 +23,5 @@ return [
     'users_per_page' => 10,
     'search_query' => 'search_query',
     'default_search_query' => '',
+    'chart_months' => 12,
 ];

@@ -6,6 +6,7 @@ use App\Models\Content;
 use App\Models\Question;
 use App\Models\User;
 use App\Models\Vote;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -62,5 +63,11 @@ class UserSeeder extends Seeder
                 });
             });
         });
+
+        for ($i = 0; $i < 5000; $i++) {
+            factory(User::class)->create(['created_at' => Carbon::now()
+                ->subMonths(rand(0, 12))
+                ->subDays(rand(0, 30))]);
+        }
     }
 }
