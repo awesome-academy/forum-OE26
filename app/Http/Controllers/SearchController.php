@@ -2,49 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
+use App\Repositories\Question\QuestionRepositoryInterface;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
+    protected $questionRepository;
+
+    public function __construct(QuestionRepositoryInterface $questionRepository)
+    {
+        $this->questionRepository = $questionRepository;
+    }
+
     public function searchQuestion($query)
     {
-        return Question::where('title', 'LIKE', '%' . $query . '%')
-            ->limit(config('constants.search_result_limit'))
-            ->pluck('title');
+        return $this->questionRepository->search($query);
     }
 
     public function searchedQuestions(Request $request)
     {
         $query = $request->query(config('constants.query'));
-        $sortedBy = $request->query(config('constants.sorted_by'), config('constants.newest'));
+        $sortedBy = $request->query(config('constants.sorted_by'));
 
-        $questions = Question::with(
-            'votes',
-            'user',
-            'tags'
-        )
-            ->withCount('answers')
-            ->where('title', 'LIKE', '%' . $query . '%');
-        $numberOfQuestions = $questions->count();
+        if (isset($query)) {
+            $request->session()
+                ->put(config('constants.search_query'), $query);
+        } else {
+            $query = $request->session()
+                ->get(config('constants.search_query'), config('constants.default_search_query'));
+        }
+
+        if (isset($sortedBy)) {
+            $request->session()
+                ->put(config('constants.sorted_by'), $sortedBy);
+        } else {
+            $sortedBy = $request->session()
+                ->get(config('constants.sorted_by'), config('constants.newest'));
+        }
+
+        $questions = null;
+        $questions = $this->questionRepository->with($questions, 'votes', 'user', 'tags');
+        $questions = $this->questionRepository->withCount($questions, 'answers');
+        $questions = $this->questionRepository->addSearchCondition($questions, $query);
+
+        $numberOfQuestions = $this->questionRepository->count($questions);
 
         switch ($sortedBy) {
             case config('constants.active'):
-                $questions = $questions->orderByDesc('activities_count');
+                $questions = $this->questionRepository->orderByDesc($questions, 'activities_count');
                 break;
             case config('constants.unanswered'):
-                $questions = $questions->withCount('answers')
-                    ->orderBy('created_at')
-                    ->orderBy('answers_count');
+                $questions = $this->questionRepository->withCount($questions, 'answers');
+                $questions = $this->questionRepository->orderByAsc($questions, 'created_at', 'answers_count');
                 break;
             default:
-                $questions = $questions->orderByDesc('created_at');
+                $questions = $this->questionRepository->orderByDesc($questions, 'created_at');
         }
 
-        $questions = $questions->paginate(config('constants.questions_per_page'));
-        $questions->map(function ($answer) {
-            $answer->sum_votes = $answer->votes->sum('vote');
-        });
+        $questions = $this->questionRepository->paginate($questions, config('constants.questions_per_page'));
+        $this->questionRepository->countVotesForPage($questions);
 
         return view('search', compact(
             'questions',

@@ -2,15 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
+use App\Repositories\Question\QuestionRepositoryInterface;
+use App\Repositories\Tag\TagRepositoryInterface;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
+    protected $questionRepository;
+    protected $tagRepository;
+
+    public function __construct(
+        QuestionRepositoryInterface $questionRepository,
+        TagRepositoryInterface $tagRepository
+    ) {
+        $this->questionRepository = $questionRepository;
+        $this->tagRepository = $tagRepository;
+    }
+
     public function list()
     {
-        $tags = Tag::withCount('questions')
-            ->paginate(config('constants.tags_per_page'));
+        $tags = null;
+        $tags = $this->tagRepository->withCount($tags, 'questions');
+        $tags = $this->tagRepository->paginate($tags, config('constants.tags_per_page'));
 
         return view('tag.list', compact(['tags']));
     }
@@ -19,29 +32,15 @@ class TagController extends Controller
     {
         $sortedBy = $request->query(config('constants.sorted_by'), config('constants.newest'));
 
-        $questions = Tag::findOrFail($tag)
-            ->questions()
-            ->with('votes', 'user')
-            ->withCount('answers');
-        $numberOfQuestions = $questions->count();
+        $tag = $this->tagRepository->find($tag);
+        $questions = $this->tagRepository->getQuestions($tag);
 
-        switch ($sortedBy) {
-            case config('constants.active'):
-                $questions = $questions->orderByDesc('activities_count');
-                break;
-            case config('constants.unanswered'):
-                $questions = $questions->withCount('answers')
-                    ->orderBy('created_at')
-                    ->orderBy('answers_count');
-                break;
-            default:
-                $questions = $questions->orderByDesc('created_at');
-        }
+        $numberOfQuestions = $this->tagRepository->countQuestionsOfTag($questions);
 
-        $questions = $questions->paginate(config('constants.questions_per_page'));
-        $questions->map(function ($answer) {
-            $answer->sum_votes = $answer->votes->sum('vote');
-        });
+        $questions = $this->tagRepository->sortQuestionsBy($questions, $sortedBy);
+        $questions = $this->tagRepository->paginateRelation($questions, config('constants.questions_per_page'));
+
+        $this->questionRepository->countVotesForPage($questions);
 
         return view('tag.question', compact(
             'questions',

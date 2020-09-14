@@ -4,34 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Answer;
 use App\Models\Question;
+use App\Repositories\Answer\AnswerRepositoryInterface;
+use App\Repositories\Question\QuestionRepositoryInterface;
+use App\Repositories\Vote\VoteRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class VoteController extends Controller
 {
+    protected $answerRepository;
+    protected $questionRepository;
+    protected $voteRepository;
+
+    public function __construct(
+        AnswerRepositoryInterface $answerRepository,
+        QuestionRepositoryInterface $questionRepository,
+        VoteRepositoryInterface $voteRepository
+    ) {
+        $this->answerRepository = $answerRepository;
+        $this->questionRepository = $questionRepository;
+        $this->voteRepository = $voteRepository;
+    }
+
     public function upVote(Request $request)
     {
         if ($request->type === config('constants.question')) {
-            $question = Question::findOrFail($request->id);
+            $question = $this->questionRepository->find($request->id);
 
             if (Auth::check()) {
-                $question->activities_count += config('constants.increasing_activities_count');
-                $question->save();
-
-                $voteCollection = $question->votes()
-                    ->firstOrNew([
-                        'user_id' => Auth::id()
-                    ]);
-
-                $voteCollection->vote = $voteCollection->vote !== config('constants.up_vote')
-                    ? config('constants.up_vote')
-                    : config('constants.no_vote');
-                $voteCollection->save();
-
-                $vote = $voteCollection->vote;
+                $vote = $this->voteRepository->upVoteForQuestion($question);
             }
 
-            $votes_sum = $question->votes()->sum('vote');
+            $votes_sum = $this->voteRepository->sumVote($question);
         }
 
         if ($request->type === config('constants.answer')) {
@@ -39,23 +43,10 @@ class VoteController extends Controller
             $question = $answer->question()->first();
 
             if (Auth::check()) {
-                $question->activities_count += config('constants.increasing_activities_count');
-                $question->save();
-
-                $voteCollection = $answer->votes()
-                    ->firstOrNew([
-                        'user_id' => Auth::id()
-                    ]);
-
-                $voteCollection->vote = $voteCollection->vote !== config('constants.up_vote')
-                    ? config('constants.up_vote')
-                    : config('constants.no_vote');
-                $voteCollection->save();
-
-                $vote = $voteCollection->vote;
+                $vote = $this->voteRepository->upVoteForAnswer($question, $answer);
             }
 
-            $votes_sum = $answer->votes()->sum('vote');
+            $votes_sum = $this->voteRepository->sumVote($answer);
         }
 
         if (!isset($vote)) {
@@ -76,23 +67,10 @@ class VoteController extends Controller
             $question = Question::findOrFail($request->id);
 
             if (Auth::check()) {
-                $question->activities_count += config('constants.increasing_activities_count');
-                $question->save();
-
-                $voteCollection = $question->votes()
-                    ->firstOrNew([
-                        'user_id' => Auth::id()
-                    ]);
-
-                $voteCollection->vote = $voteCollection->vote !== config('constants.down_vote')
-                    ? config('constants.down_vote')
-                    : config('constants.no_vote');
-                $voteCollection->save();
-
-                $vote = $voteCollection->vote;
+                $vote = $this->voteRepository->downVoteForQuestion($question);
             }
 
-            $votes_sum = $question->votes()->sum('vote');
+            $votes_sum = $this->voteRepository->sumVote($question);
         }
 
         if ($request->type === config('constants.answer')) {
@@ -100,23 +78,10 @@ class VoteController extends Controller
             $question = $answer->question()->first();
 
             if (Auth::check()) {
-                $question->activities_count += config('constants.increasing_activities_count');
-                $question->save();
-
-                $voteCollection = $answer->votes()
-                    ->firstOrNew([
-                        'user_id' => Auth::id()
-                    ]);
-
-                $voteCollection->vote = $voteCollection->vote !== config('constants.down_vote')
-                    ? config('constants.down_vote')
-                    : config('constants.no_vote');
-                $voteCollection->save();
-
-                $vote = $voteCollection->vote;
+                $vote = $this->voteRepository->downVoteForAnswer($question, $answer);
             }
 
-            $votes_sum = $answer->votes()->sum('vote');
+            $votes_sum = $this->voteRepository->sumVote($answer);
         }
 
         if (!isset($vote)) {
