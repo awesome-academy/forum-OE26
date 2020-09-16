@@ -16,5 +16,8 @@
             @yield('content')
         </div>
     </div>
+    @auth
+        <input type="hidden" value="{{ Auth::id() }}" id="auth-id"/>
+    @endauth
 </body>
 </html>

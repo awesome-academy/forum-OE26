@@ -25,6 +25,8 @@ import SearchInput from "./components/SearchInput";
 import commentActions from "./components/CommentActions";
 import VoteActions from "./components/VoteActions";
 import EditAnswerForm from "./components/EditAnswerForm";
+import "pusher-js";
+import Notification from "./components/Notification";
 
 const sidebar = new Sidebar(document);
 const logoutButton = new LogoutButton(document);
@@ -35,28 +37,30 @@ const editorDiv = document.getElementById("editor");
 const editor = editorDiv && new MarkdownEditor(editorDiv);
 
 const createQuestionForm =
-    window.location.pathname === path.resolve("questions", "create")
-    && new CreateQuestionForm(document, editor);
+    window.location.pathname === path.resolve("questions", "create") &&
+    new CreateQuestionForm(document, editor);
 
 const post = new Post(MarkdownViewer);
 const sortedTypeGroupButton = new SortedTypeGroupButton(document);
 
 const editQuestionForm =
-    /^\/questions\/\d+\/edit$/gi.test(window.location.pathname)
-    && new EditQuestionForm(document, editor);
+    /^\/questions\/\d+\/edit$/gi.test(window.location.pathname) &&
+    new EditQuestionForm(document, editor);
 
 const shareButtons = new ShareButtons(document);
 
 const createAnswerForm =
-    /^\/questions\/\d+$/gi.test(window.location.pathname)
-    && new CreateAnswerForm(document, editor);
+    /^\/questions\/\d+$/gi.test(window.location.pathname) &&
+    new CreateAnswerForm(document, editor);
 
 /^\/questions\/\d+$/gi.test(window.location.pathname) && commentActions();
 
 const voteActions =
-    /^\/questions\/\d+$/gi.test(window.location.pathname)
-    && new VoteActions(document);
+    /^\/questions\/\d+$/gi.test(window.location.pathname) &&
+    new VoteActions(document);
 
 const editAnswerForm =
-    /^\/answers\/\d+\/edit$/gi.test(window.location.pathname)
-    && new EditAnswerForm(document, editor);
+    /^\/answers\/\d+\/edit$/gi.test(window.location.pathname) &&
+    new EditAnswerForm(document, editor);
+
+const notification = new Notification();
