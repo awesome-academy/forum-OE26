@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Charts\UserChart;
 use App\Repositories\Answer\AnswerRepository;
 use App\Repositories\Answer\AnswerRepositoryInterface;
 use App\Repositories\Comment\CommentRepository;
@@ -18,6 +19,7 @@ use App\Repositories\User\UserRepository;
 use App\Repositories\User\UserRepositoryInterface;
 use App\Repositories\Vote\VoteRepository;
 use App\Repositories\Vote\VoteRepositoryInterface;
+use ConsoleTVs\Charts\Registrar as Charts;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -75,8 +77,10 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Charts $charts)
     {
-        //
+        $charts->register([
+            UserChart::class,
+        ]);
     }
 }

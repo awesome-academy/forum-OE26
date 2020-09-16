@@ -68,4 +68,11 @@ class AdminController extends Controller
 
         return redirect()->route('create_tag');
     }
+
+    public function userChart()
+    {
+        Gate::authorize('dashboard');
+
+        return view('admin.chart');
+    }
 }

@@ -11,6 +11,10 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                     {{ trans('admin.tags') }}
                 </a>
+                <a class="nav-link" href="{{ route('chart') }}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    {{ trans('admin.chart') }}
+                </a>
             </div>
         </div>
     </nav>

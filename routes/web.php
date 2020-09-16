@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +53,7 @@ Route::group(['middleware' => 'locale'], function () {
         Route::get('/tag', 'AdminController@createTag')->name('create_tag');
         Route::post('/tag', 'AdminController@storeTag')->name('store_tag');
         Route::put('/role', 'AdminController@updateUserRole')->name('update_role');
+        Route::get('/chart', 'AdminController@userChart')->name('chart');
     });
 
     Route::get('history/{type}/{id}', 'HistoryController@getHistory')->name('history');

@@ -16,5 +16,8 @@ return [
     'description' => 'Chi tiết',
     'create' => 'Tạo',
     'logout' => 'Đăng xuất',
-    'search' => 'Tìm kiếm,'
+    'search' => 'Tìm kiếm,',
+    'chart' => 'Biểu đồ',
+    'number_of_users' => 'Số lượng người dùng',
+    'blank' => '',
 ];

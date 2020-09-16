@@ -11,19 +11,23 @@
     },
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^5.14.0",
-        "@toast-ui/editor": "^2.3.1",
-        "axios": "^0.19",
-        "bootstrap": "^4.5.0",
-        "codemirror": "^5.56.0",
+        "@toast-ui/editor": "^2.4.0",
+        "axios": "^0.20",
+        "bootstrap": "^4.5.2",
+        "codemirror": "^5.57.0",
         "cross-env": "^7.0",
         "jquery": "^3.5",
-        "laravel-mix": "^5.0.4",
-        "lodash": "^4.17.19",
+        "laravel-mix": "^5.0.5",
+        "lodash": "^4.17.20",
         "popper.js": "^1.16",
         "resolve-url-loader": "^3.1.1",
         "sass": "^1.26.10",
-        "sass-loader": "^9.0.2",
-        "vue": "^2.6.11",
-        "vue-template-compiler": "^2.6.11"
+        "sass-loader": "^10.0.2",
+        "vue": "^2.6.12",
+        "vue-template-compiler": "^2.6.12"
+    },
+    "dependencies": {
+        "@chartisan/echarts": "^2.2.3",
+        "echarts": "^4.9.0"
     }
 }
