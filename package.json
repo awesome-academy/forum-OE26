@@ -28,6 +28,8 @@
     },
     "dependencies": {
         "@chartisan/echarts": "^2.2.3",
-        "echarts": "^4.9.0"
+        "echarts": "^4.9.0",
+        "laravel-echo": "^1.8.1",
+        "pusher-js": "^7.0.0"
     }
 }

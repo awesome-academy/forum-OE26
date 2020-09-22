@@ -2,7 +2,7 @@
 
 return [
     'menu' => 'Danh mục',
-    'notifications' => 'Notifications',
+    'notifications' => 'Thông báo',
     'profile' => 'Hồ sơ',
     'search' => 'Tìm kiếm',
     'login' => 'Đăng nhập',
@@ -11,5 +11,6 @@ return [
     'posts' => 'Bài đăng',
     'tags' => 'Nhóm',
     'users' => 'Người dùng',
-    'language' => 'English'
+    'language' => 'English',
+    'no_notification' => 'Không có thông báo nào.',
 ];

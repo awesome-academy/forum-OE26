@@ -27,13 +27,18 @@
     <div class="collapse navbar-collapse flex-grow-0" id="navbarSupportedContent">
         <ul class="navbar-nav ml-lg-auto">
             <li class="nav-item dropdown active">
-                <a class="nav-link dropdown-toggle color-3" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle color-3" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {{ trans('bars.notifications') }}
+                </a>
+                <div class="dropdown-menu dropdown-menu-right notifications-dropdown-menu" aria-labelledby="navbarDropdown1" id="navbarDropdownList1">
+                    <a class="dropdown-item">{{ trans('bars.no_notification') }}</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown active">
+                <a class="nav-link dropdown-toggle color-3" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     {{ trans('bars.menu') }}
                 </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item color-3" href="#">
-                        {{ trans('bars.notifications') }}
-                    </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown2">
                     <a class="dropdown-item color-3" href="{{ route('home') }}">
                         {{ trans('bars.profile') }}
                     </a>

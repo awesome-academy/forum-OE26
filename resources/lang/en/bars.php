@@ -12,4 +12,5 @@ return [
     'tags' => 'Tags',
     'users' => 'Users',
     'language' => 'Tiếng Việt',
+    'no_notification' => 'There is no notification.',
 ];

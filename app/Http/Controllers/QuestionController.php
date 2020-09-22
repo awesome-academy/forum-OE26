@@ -8,6 +8,7 @@ use App\Repositories\Comment\CommentRepositoryInterface;
 use App\Repositories\Content\ContentRepositoryInterface;
 use App\Repositories\Question\QuestionRepositoryInterface;
 use App\Repositories\Tag\TagRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use App\Repositories\Vote\VoteRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ class QuestionController extends Controller
     protected $contentRepository;
     protected $questionRepository;
     protected $tagRepository;
+    protected $userRepository;
     protected $voteRepository;
 
     public function __construct(
@@ -26,15 +28,29 @@ class QuestionController extends Controller
         ContentRepositoryInterface $contentRepository,
         QuestionRepositoryInterface $questionRepository,
         TagRepositoryInterface $tagRepository,
+        UserRepositoryInterface $userRepository,
         VoteRepositoryInterface $voteRepository
     ) {
         $this->commentRepository = $commentRepository;
         $this->contentRepository = $contentRepository;
         $this->questionRepository = $questionRepository;
         $this->tagRepository = $tagRepository;
+        $this->userRepository = $userRepository;
         $this->voteRepository = $voteRepository;
 
         $this->middleware('auth')->only(['create', 'store']);
+    }
+
+    public function getQuestionNotifications()
+    {
+        $notifications = Auth::user()->notifications;
+        foreach ($notifications as $notification) {
+            $notification->message = $this->userRepository
+                ->find($notification->data['creation_user_id'])
+                ->name . trans('messages.answer_created');
+        }
+
+        return $notifications;
     }
 
     /**
@@ -73,7 +89,7 @@ class QuestionController extends Controller
         $questions = $this->questionRepository->paginate($questions, config('constants.questions_per_page'));
         $this->questionRepository->countVotesForPage($questions);
 
-        $numberOfQuestions = $this->questionRepository->count();
+        $numberOfQuestions = $this->questionRepository->count(null);
 
         return view('post.list', compact(
             'questions',
@@ -167,6 +183,14 @@ class QuestionController extends Controller
         $answers = $this->questionRepository->getAnswers($question);
 
         $comments = $this->commentRepository->getCommentsWithUser($question);
+
+        if (Auth::id() === $user->id) {
+            foreach ($user->unreadNotifications as $notification) {
+                if ($notification->data['question_id'] === $questionId) {
+                    $notification->markAsRead();
+                }
+            }
+        }
 
         return view('post.post', compact(
             'questionId',

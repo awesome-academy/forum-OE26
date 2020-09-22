@@ -23,6 +23,7 @@ Route::group(['middleware' => 'locale'], function () {
     Route::put('/', 'HomeController@editProfile')->name('profile');
 
     Route::resource('questions', 'QuestionController');
+    Route::get('question-notifications', 'QuestionController@getQuestionNotifications');
 
     Route::resource('contents', 'ContentController')->only([
         'show',
