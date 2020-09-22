@@ -144,7 +144,7 @@ abstract class BaseRepository implements RepositoryInterface
         return $this->model->count();
     }
 
-    public function sync(Model $model, string $relatedRelation, array $data): void
+    public function sync(Model $model, string $relatedRelation, ?array $data): void
     {
         $relation = $model->$relatedRelation();
         if (get_class($relation) === BelongsToMany::class) {

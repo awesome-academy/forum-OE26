@@ -24,4 +24,6 @@ return [
     'search_query' => 'search_query',
     'default_search_query' => '',
     'chart_months' => 12,
+    'create_answer' => 1,
+    'create_comment' => 2,
 ];

@@ -28,6 +28,8 @@ class CommentController extends Controller
 
         $this->middleware('auth');
         $this->authorizeResource(Comment::class, 'comment');
+
+        $this->middleware('question.answered')->only('store');
     }
 
     /**
