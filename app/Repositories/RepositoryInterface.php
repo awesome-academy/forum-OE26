@@ -43,7 +43,7 @@ interface RepositoryInterface
 
     public function count(?Builder $query): int;
 
-    public function sync(Model $model, string $relatedRelationName, array $data): void;
+    public function sync(Model $model, string $relatedRelationName, ?array $data): void;
 
     public function get(Builder $query): Collection;
 }

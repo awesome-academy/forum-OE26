@@ -22,6 +22,8 @@ class AnswerController extends Controller
 
         $this->middleware('auth');
         $this->authorizeResource(Answer::class, 'answer');
+
+        $this->middleware('question.answered')->only('store');
     }
 
     /**
