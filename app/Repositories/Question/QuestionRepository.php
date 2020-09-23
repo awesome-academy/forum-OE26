@@ -109,4 +109,27 @@ class QuestionRepository extends BaseRepository implements QuestionRepositoryInt
     {
         return $query->where('title', 'LIKE', '%' . $searchString . '%');
     }
+
+    public function getLastWeekQuestions(): Builder
+    {
+        return Question::where('created_at', '>=', Carbon::now()->subWeek());
+    }
+
+    public function countComments(Builder $query): Collection
+    {
+        $questions = $query->with(['answers' => function ($query) {
+            $query->withCount('comments');
+        }])
+            ->get();
+
+        foreach ($questions as $question) {
+            if ($question->comments_count) {
+                $question->comments_count += $question->answers->sum('comments_count');
+            } else {
+                $question->comments_count = $question->answers->sum('comments_count');
+            }
+        }
+
+        return $questions;
+    }
 }

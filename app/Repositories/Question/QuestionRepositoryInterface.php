@@ -25,4 +25,8 @@ interface QuestionRepositoryInterface
     public function search(string $query): SupportCollection;
 
     public function addSearchCondition(Builder $query, string $searchString): Builder;
+
+    public function getLastWeekQuestions(): Builder;
+
+    public function countComments(Builder $query): Collection;
 }
