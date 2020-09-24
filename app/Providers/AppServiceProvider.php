@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Charts\UserChart;
+use App\Jobs\SendAdminEmail;
+use App\Mail\AdminRecurringMail;
 use App\Repositories\Answer\AnswerRepository;
 use App\Repositories\Answer\AnswerRepositoryInterface;
 use App\Repositories\Comment\CommentRepository;
